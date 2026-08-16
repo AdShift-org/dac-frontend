@@ -6,6 +6,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight } from "lucide-react";
 
+import { Link } from "../localized-link";
+
 gsap.registerPlugin(ScrollTrigger);
 
 const images = [
@@ -151,11 +153,15 @@ export const FeaturedProjects: FC = () => {
 								</div>
 
 								{/* Bottom: Discover Project Link */}
-								<div>
-									<span className="font-sans text-xs font-semibold tracking-[0.2em] text-accent uppercase transition-colors group-hover:text-white sm:text-sm">
+								<Link
+									to="/projects/$projectId"
+									params={{ projectId: project.name.value }}
+									className="group/link outline-none"
+								>
+									<span className="p-4 font-sans text-xs font-semibold tracking-[0.2em] text-accent uppercase transition-colors group-hover:text-white group-focus-visible/link:bg-white/20 hover:bg-white/20 sm:text-sm">
 										{content.discover?.value ?? "DISCOVER PROJECT"}
 									</span>
-								</div>
+								</Link>
 							</div>
 						</div>
 					))}
