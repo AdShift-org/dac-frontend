@@ -2,8 +2,12 @@ import { defaultLocale, getIntlayer, getLocalizedUrl, localeMap } from "intlayer
 
 const siteUrl = import.meta.env.VITE_SITE_URL ?? "http://localhost:3000";
 
+const translationObj = getIntlayer("seo", "en");
+
+type LocaleKey = keyof typeof translationObj;
+
 export function seoFor(key: string, path: string, locale: string) {
-	const meta = getIntlayer("seo", locale)[key];
+	const meta = getIntlayer("seo", locale)[key as LocaleKey];
 	const url = getLocalizedUrl(`${siteUrl}${path}`, locale);
 	const ogImage = `${siteUrl}/og-image?title=${encodeURIComponent(meta.title)}&description=${encodeURIComponent(meta.description)}`;
 
