@@ -1,0 +1,72 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "tabWidth": 4,
+  "useTabs": true,
+  "trailingComma": "none",
+  "sortTailwindcss": {
+    "stylesheet": "./src/styles.css",
+    "functions": ["clsx", "cn"],
+    "preserveWhitespace": true
+  },
+  "sortImports": {
+    "customGroups": [
+      {
+        "groupName": "react",
+        "elementNamePattern": ["react", "react-dom"]
+      },
+      {
+        "groupName": "tanstack",
+        "elementNamePattern": ["@tanstack/*"]
+      },
+      {
+        "groupName": "intlayer",
+        "elementNamePattern": ["intlayer", "react-intlayer"]
+      },
+      {
+        "groupName": "icons",
+        "elementNamePattern": ["@hugeicons/*"]
+      },
+      {
+        "groupName": "ui-components",
+        "elementNamePattern": ["@/components/ui/*"]
+      },
+      {
+        "groupName": "components",
+        "elementNamePattern": ["@/components/**"]
+      },
+      {
+        "groupName": "lib",
+        "elementNamePattern": ["@/lib/**"]
+      },
+      {
+        "groupName": "hooks",
+        "elementNamePattern": ["@/hooks/*"]
+      },
+      {
+        "groupName": "assets",
+        "elementNamePattern": ["@/assets/*"]
+      }
+    ],
+    "groups": [
+      "react",
+      "tanstack",
+      "intlayer",
+      "icons",
+      { "newlinesBetween": true },
+      "ui-components",
+      "components",
+      "lib",
+      "hooks",
+      "assets",
+      { "newlinesBetween": true },
+      "type-import",
+      ["value-builtin", "value-external"],
+      "type-internal",
+      "value-internal",
+      ["type-parent", "type-sibling", "type-index"],
+      ["value-parent", "value-sibling", "value-index"],
+      "unknown"
+    ]
+  },
+  "ignorePatterns": ["**/*/routeTree.gen.ts", "src/lib/api/v1.d.ts"]
+}

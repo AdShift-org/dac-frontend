@@ -1,0 +1,29 @@
+{
+	"$schema": "./node_modules/oxlint/configuration_schema.json",
+	"plugins": ["typescript", "unicorn", "oxc"],
+	"categories": {
+		"correctness": "error"
+	},
+	"jsPlugins": ["oxlint-tailwindcss"],
+	"ignorePatterns": ["**/*/routeTree.gen.ts"],
+	"rules": {
+		"tailwindcss/no-conflicting-classes": "error",
+		"tailwindcss/no-deprecated-classes": "error",
+		"tailwindcss/no-unknown-classes": "error",
+		"tailwindcss/no-duplicate-classes": "warn",
+		"tailwindcss/no-unnecessary-arbitrary-value": "warn",
+		"tailwindcss/enforce-sort-order": "warn",
+		"tailwindcss/enforce-canonical": "warn",
+		"tailwindcss/consistent-variant-order": "warn",
+		"tailwindcss/enforce-consistent-important-position": "warn",
+		"tailwindcss/no-unnecessary-whitespace": "warn"
+	},
+	"settings": {
+		"tailwindcss": {
+			"entryPoint": "src/styles.css"
+		}
+	},
+	"env": {
+		"builtin": true
+	}
+}
