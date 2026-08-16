@@ -5,7 +5,7 @@ const philosophyContent = {
 	content: {
 		heading: t({
 			en: "PHILOSOPHY",
-			ar: "الفَلْسَفَة"
+			ar: "فَلْسَفَتُنَا"
 		}),
 		paragraph: t({
 			en: "We believe that architecture is the practical realization of excellence. Our approach merges rigorous engineering with profound aesthetic sensitivity.",
@@ -13,9 +13,10 @@ const philosophyContent = {
 		}),
 		principles: [
 			{
+				number: "01",
 				title: t({
-					en: "EXCELLENCE",
-					ar: "التَّمَيُّز"
+					en: "VISION",
+					ar: "الرُّؤْيَة"
 				}),
 				description: t({
 					en: "To engineer resilient, innovative structures that elevate the human experience and stand the test of time.",
@@ -23,23 +24,25 @@ const philosophyContent = {
 				})
 			},
 			{
+				number: "02",
 				title: t({
-					en: "VISION",
-					ar: "الرُّؤْيَة"
+					en: "MISSION",
+					ar: "الرِّسَالَة"
 				}),
 				description: t({
 					en: "To be the unquestioned standard for architectural engineering excellence in the Middle East and beyond.",
-					ar: "أن نكون المعيار بلا منازع للتميّز في الهندسة المعمارية في الشرق الأوسط وخارجه."
+					ar: "أن نكون المعيار الأبرز للتميّز في الهندسة المعمارية في الشرق الأوسط وما وراءه."
 				})
 			},
 			{
+				number: "03",
 				title: t({
-					en: "INTEGRITY",
-					ar: "النَّزَاهَة"
+					en: "VALUES",
+					ar: "الْقِيَم"
 				}),
 				description: t({
 					en: "Integrity, Precision, Innovation, and Enduring Quality.",
-					ar: "النزاهة والدقة والابتكار والجودة الدائمة."
+					ar: "النزاهة، الدقة، الابتكار، والجودة المستدامة."
 				})
 			}
 		]

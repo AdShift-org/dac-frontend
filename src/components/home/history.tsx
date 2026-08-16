@@ -1,47 +1,98 @@
-import type { FC } from "react";
+import { useRef, type FC } from "react";
 
+import { useGSAP } from "@gsap/react";
 import { useIntlayer } from "react-intlayer";
+
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export const History: FC = () => {
 	const content = useIntlayer("home-history");
 
+	const sectionRef = useRef<HTMLElement>(null);
+
+	useGSAP(
+		() => {
+			const q = gsap.utils.selector(sectionRef);
+
+			// Initial hidden states
+			gsap.set(q(".hs-sub"), { opacity: 0, letterSpacing: "0.5em" });
+			gsap.set(q(".hs-head h2"), { clipPath: "inset(0 100% 0 0)" });
+			gsap.set(q(".hs-pin"), { opacity: 0, scale: 0, rotation: 45 });
+			gsap.set(q(".hs-stem"), { scaleY: 0, transformOrigin: "bottom center" });
+			gsap.set(q(".hs-card"), { opacity: 0, y: 48 });
+			gsap.set(q(".hs-year"), { opacity: 0, y: 20, scale: 0.9 });
+
+			const tl = gsap.timeline({
+				scrollTrigger: {
+					trigger: sectionRef.current,
+					start: "top 90%",
+					once: true
+				},
+				defaults: { ease: "power3.out" }
+			});
+
+			// Subtitle letter-spacing settles
+			tl.to(q(".hs-sub"), { opacity: 1, letterSpacing: "0.25em", duration: 1 })
+				// Heading draws in with a wipe
+				.to(q(".hs-head h2"), { clipPath: "inset(0 0% 0 0)", duration: 1.1, ease: "power4.out" }, "-=0.7")
+				// Pins drop in and stems grow upward from the rail
+				.to(
+					q(".hs-pin"),
+					{ opacity: 1, scale: 1, rotation: 45, duration: 0.5, stagger: 0.12, ease: "back.out(2)" },
+					"<"
+				)
+				.to(q(".hs-stem"), { scaleY: 1, duration: 0.7, stagger: 0.12, ease: "power2.out" }, "<")
+				// Cards rise out of the rail
+				.to(q(".hs-card"), { opacity: 1, y: 0, duration: 0.8, stagger: 0.14 }, "-=0.4")
+				// Years pop in last
+				.to(q(".hs-year"), { opacity: 1, y: 0, scale: 1, duration: 0.6, stagger: 0.14, ease: "power2.out" }, "-=0.5");
+
+			// Re-measure once the hero unlocks scrolling / assets settle
+			const onLoad = () => ScrollTrigger.refresh();
+			window.addEventListener("load", onLoad);
+			return () => window.removeEventListener("load", onLoad);
+		},
+		{ scope: sectionRef }
+	);
+
 	return (
-		<section className="bg-neutral-900 py-24">
-			<div className="mx-auto max-w-7xl px-6">
-				<div className="flex items-end justify-between">
-					<h2 className="font-heading text-4xl font-bold text-white md:text-5xl">
+		<section ref={sectionRef} className="bg-[#12110e] py-28 text-white">
+			<div className="mx-auto max-w-7xl px-6 sm:px-12">
+				<div className="hs-head flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+					<h2 className="font-sans text-3xl font-extrabold tracking-wider text-white uppercase sm:text-4xl">
 						{content.heading.value}
 					</h2>
-					<p className="hidden text-sm tracking-widest text-white/50 md:block">
+					<p className="hs-sub font-sans text-xs tracking-[0.25em] text-accent/80 uppercase">
 						{content.subtitle.value}
 					</p>
 				</div>
 
-				<div className="relative mt-16">
-					<div className="absolute left-0 right-0 top-1/2 h-px bg-white/20" />
-
-					<div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-						{content.milestones.map((milestone, index) => (
-							<div
-								key={milestone.year}
-								className={`relative ${index % 2 === 0 ? "pb-12" : "pt-12"}`}
-							>
-								<div className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-accent bg-neutral-900" />
-
-								<div className="text-center">
-									<p className="text-4xl font-bold text-accent">
-										{milestone.year}
-									</p>
-									<p className="mt-2 text-sm font-medium tracking-widest text-white">
-										{milestone.title.value}
-									</p>
-									<p className="mt-3 text-sm leading-relaxed text-white/60">
-										{milestone.description.value}
-									</p>
-								</div>
+				<div className="hs-grid mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+					{content.milestones.map((milestone) => (
+						<div key={milestone.year} className="group relative flex flex-col">
+							{/* Pin / Indicator above card */}
+							<div className="mb-4 flex flex-col items-center">
+								<div className="hs-pin size-2 rotate-45 bg-accent shadow-[0_0_8px_rgba(209,160,84,0.6)]" />
+								<div className="hs-stem mt-1 h-6 w-px bg-accent/40" />
 							</div>
-						))}
-					</div>
+
+							{/* Milestone Card */}
+							<div className="hs-card flex flex-1 flex-col rounded-sm border border-white/5 bg-[#1a1814] p-8 transition-colors duration-300 group-hover:border-accent/30 group-hover:bg-[#201e19]">
+								<p className="hs-year font-sans text-3xl font-bold tracking-tight text-white/90 transition-colors group-hover:text-accent sm:text-4xl">
+									{milestone.year}
+								</p>
+								<p className="mt-2 font-sans text-xs font-semibold tracking-widest text-accent uppercase">
+									{milestone.title.value}
+								</p>
+								<p className="mt-4 text-xs leading-relaxed font-light text-white/60 sm:text-sm">
+									{milestone.description.value}
+								</p>
+							</div>
+						</div>
+					))}
 				</div>
 			</div>
 		</section>

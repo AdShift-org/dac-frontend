@@ -1,49 +1,105 @@
-import type { FC } from "react";
+import { useRef, type FC } from "react";
 
+import { useGSAP } from "@gsap/react";
 import { useIntlayer } from "react-intlayer";
 
-const images = [
-	"https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400",
-	"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
-	"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400",
-	"https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400"
-];
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+import emiratiPartner from "#/assets/home/leadership/emirati-partner.png";
+import ceo from "#/assets/home/leadership/ceo.png";
+import generalManager from "#/assets/home/leadership/general-manager.png";
+import generalManager2 from "#/assets/home/leadership/general-manager-2.png";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+const images = [emiratiPartner, ceo, generalManager, generalManager2];
 
 export const Leadership: FC = () => {
 	const content = useIntlayer("home-leadership");
 
-	return (
-		<section className="bg-neutral-900 py-24">
-			<div className="mx-auto max-w-7xl px-6">
-				<div className="flex items-end justify-between">
-					<div>
-						<p className="text-sm font-medium tracking-widest text-accent">
-							{content.label.value}
-						</p>
-						<h2 className="mt-4 font-heading text-3xl font-bold text-white md:text-4xl">
-							{content.heading.value}
-						</h2>
-						<p className="mt-2 text-sm text-white/50">{content.subtitle.value}</p>
-					</div>
-				</div>
+	const sectionRef = useRef<HTMLElement>(null);
 
-				<div className="mt-12 grid grid-cols-2 gap-6 md:grid-cols-4">
-					{content.members.map((member, index) => (
-						<div key={index} className="group">
-							<div className="relative overflow-hidden rounded-lg">
+	useGSAP(
+		() => {
+			const q = gsap.utils.selector(sectionRef);
+
+			// Initial hidden states
+			gsap.set(q(".ld-label"), { opacity: 0, x: -24 });
+			gsap.set(q(".ld-head h2"), { clipPath: "inset(0 100% 0 0)" });
+			gsap.set(q(".ld-card"), { clipPath: "inset(100% 0 0 0)", y: -40 });
+			gsap.set(q(".ld-img"), { scale: 1.35 });
+			gsap.set(q(".ld-nameplate"), { opacity: 0, y: 24 });
+
+			const tl = gsap.timeline({
+				scrollTrigger: {
+					trigger: sectionRef.current,
+					start: "top 90%",
+					once: true
+				},
+				defaults: { ease: "power3.out" }
+			});
+
+			// Label typesets in from the left
+			tl.to(q(".ld-label"), { opacity: 1, x: 0, duration: 0.9 })
+				// Heading unmasks left-to-right
+				.to(q(".ld-head h2"), { clipPath: "inset(0 0% 0 0)", duration: 1.1, ease: "power4.out" }, "-=0.5")
+				// Cards lift as shutters while portraits settle from a zoom
+				.to(
+					q(".ld-card"),
+					{ clipPath: "inset(0% 0 0 0)", y: 0, duration: 0.9, stagger: 0.12, ease: "power4.out" },
+					"<"
+				)
+				.to(q(".ld-img"), { scale: 1, duration: 1.4, stagger: 0.12 }, "<")
+				// Nameplates rise after the shutters clear
+				.to(q(".ld-nameplate"), { opacity: 1, y: 0, duration: 0.6, stagger: 0.12, ease: "power2.out" }, "-=0.5");
+
+			// Re-measure once the hero unlocks scrolling / assets settle
+			const onLoad = () => ScrollTrigger.refresh();
+			window.addEventListener("load", onLoad);
+			return () => window.removeEventListener("load", onLoad);
+		},
+		{ scope: sectionRef }
+	);
+
+	return (
+		<section ref={sectionRef} className="bg-[#12110e] py-28 text-white">
+			<div className="mx-auto max-w-7xl px-6 sm:px-12">
+				<div className="ld-head flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+						<div>
+							<span className="ld-label font-sans text-xs font-semibold tracking-[0.25em] text-accent uppercase">
+								— {content.label.value}
+							</span>
+							<h2 className="mt-4 font-sans text-3xl font-extrabold tracking-tight text-white uppercase sm:text-4xl">
+								{content.heading.value}
+							</h2>
+						</div>
+						<p className="font-sans text-xs tracking-[0.2em] text-white/50 uppercase">
+							{content.subtitle.value}
+						</p>
+					</div>
+
+					<div className="ld-grid mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+						{content.members.map((member, index) => (
+							<div
+								key={index}
+								className="ld-card group relative aspect-[3/4] overflow-hidden rounded-sm bg-neutral-900 shadow-xl"
+							>
 								<div
-									className="aspect-[3/4] bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+									className="ld-img absolute inset-0 bg-cover bg-center contrast-125 grayscale transition-transform duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
 									style={{
-										backgroundImage: `url('${images[index]}')`,
+										backgroundImage: `url('${images[index]}')`
 									}}
 								/>
-								<div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-							</div>
-							<div className="mt-4">
-								<h3 className="text-sm font-semibold tracking-widest text-white">
+								<div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent" />
+
+								<div className="ld-nameplate absolute inset-x-0 bottom-0 p-6">
+								<h3 className="font-sans text-sm font-bold tracking-wider text-white uppercase transition-colors group-hover:text-accent">
 									{member.name.value}
 								</h3>
-								<p className="mt-1 text-xs text-white/50">{member.role.value}</p>
+								<p className="mt-2 text-xs leading-relaxed font-light text-white/60">
+									{member.role.value}
+								</p>
 							</div>
 						</div>
 					))}

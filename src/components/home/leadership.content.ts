@@ -13,7 +13,7 @@ const leadershipContent = {
 		}),
 		subtitle: t({
 			en: "EST. 2004 - CEO 2025",
-			ar: "تأسَّسَت 2004 - الرئيس التنفيذي 2025"
+			ar: "تأسَّسَت 2004 - الإدارة التنفيذية"
 		}),
 		members: [
 			{
@@ -22,38 +22,38 @@ const leadershipContent = {
 					ar: "رِسَالَة الرَّئِيس التَّنْفِيذِيّ"
 				}),
 				role: t({
-					en: "A message from our CEO on our core values.",
-					ar: "رسالة من رئيسنا التنفيذي حول قيمنا الأساسية."
+					en: "Leading strategic vision, operational integrity and core values.",
+					ar: "قيادة الرؤية الاستراتيجية والنزاهة التشغيلية والقيم الأساسية."
 				})
 			},
 			{
 				name: t({
-					en: "THE EMIRATI",
-					ar: "الْإِمَارَاتِيّ"
+					en: "THE DUBAI PARTNER",
+					ar: "شَرِيكُ دُبَي"
 				}),
 				role: t({
-					en: "Building strong partnerships for sustainable development.",
-					ar: "بناء شراكات قوية من أجل التنمية المستدامة."
-				})
-			},
-			{
-				name: t({
-					en: "GENERAL MANAGER",
-					ar: "المُدِير العَام"
-				}),
-				role: t({
-					en: "Leading operational excellence and strategic growth.",
-					ar: "قيادة التميّز التشغيلي والنمو الاستراتيجي."
+					en: "Building cross-regional alliances for sustainable growth.",
+					ar: "بناء تحالفات إقليمية رائدة للنمو المستدام."
 				})
 			},
 			{
 				name: t({
 					en: "GENERAL MANAGER",
-					ar: "المُدِير العَام"
+					ar: "الْمُدِيرُ الْعَام - مِصْر"
 				}),
 				role: t({
-					en: "Driving innovation and project delivery.",
-					ar: "قيادة الابتكار وتسليم المشاريع."
+					en: "Leading operational excellence and project delivery.",
+					ar: "قيادة التميّز التشغيلي وتنفيذ المشاريع الكبرى."
+				})
+			},
+			{
+				name: t({
+					en: "GENERAL MANAGER",
+					ar: "الْمُدِيرُ الْعَام - الْإِمَارَات"
+				}),
+				role: t({
+					en: "Driving technological innovation and regional execution.",
+					ar: "قيادة الابتكار التقني والتنفيذ الإقليمي."
 				})
 			}
 		]

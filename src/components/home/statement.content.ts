@@ -17,41 +17,41 @@ const statementContent = {
 		}),
 		heading3: t({
 			en: "INTO LANDMARKS.",
-			ar: "إِلَى مَعَالِمَ"
+			ar: "إِلَى مَعَالِمَ عِمْرَانِيَّة."
 		}),
 		p1: t({
-			en: "DAC Construction is a company built on experience, expertise and a commitment to delivering quality projects on time.",
-			ar: "شركة DAC للمقاولات شركةٌ مبنية على الخبرة والكفاءة والالتزام بتسليم مشاريع عالية الجودة في الوقت المحدد."
+			en: "DAC Construction is a premier multidisciplinary construction and engineering leader with a rich legacy spanning over two decades.",
+			ar: "شركة DAC للمقاولات رائدة في قطاع الإنشاءات والهندسة متعددة التخصصات بإرث عريق يمتد لأكثر من عقدين."
 		}),
 		p2: t({
-			en: "Since our establishment in 2004, we have successfully delivered diverse projects that contribute to shaping communities and enhancing lives.",
-			ar: "منذ تأسيسنا في عام 2004، نجحنا في تنفيذ مشاريع متنوّعة تسهم في تشكيل المجتمعات وتحسين حياة الناس."
+			en: "We execute comprehensive contracting and development solutions, delivering landmark architectural, residential, and infrastructure projects across the Middle East.",
+			ar: "ننفذ حلولاً متكاملة في المقاولات والتطوير، مقدمين مشاريع معمارية وسكنية وبنية تحتية رائدة عبر الشرق الأوسط."
 		}),
 		stats: {
 			established: t({
-				en: "ESTABLISHED",
-				ar: "تَأسَّسَت"
+				en: "FOUNDED",
+				ar: "تَأَسَّسَت"
 			}),
 			headquarters: t({
 				en: "HEADQUARTERS",
-				ar: "المقر الرئيسي"
+				ar: "الْمَقَرُّ الرَّئِيسِيُّ"
 			}),
-			projects: t({
-				en: "PROJECTS",
-				ar: "المشاريع"
+			presence: t({
+				en: "PRESENCE",
+				ar: "النِّطَاقُ الْجُغْرَافِيُّ"
 			})
 		},
 		establishedValue: t({
 			en: "2004",
-			ar: "2004"
+			ar: "٢٠٠٤"
 		}),
 		headquartersValue: t({
 			en: "CAIRO, EGYPT",
 			ar: "القاهرة، مصر"
 		}),
-		projectsValue: t({
-			en: "EGYPT - UAE",
-			ar: "مصر - الإمارات"
+		presenceValue: t({
+			en: "EGYPT • UAE",
+			ar: "مصر • الإمارات"
 		})
 	}
 } satisfies Dictionary;
