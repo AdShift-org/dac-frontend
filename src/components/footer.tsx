@@ -1,50 +1,58 @@
 import type { FC } from "react";
 
 import { useIntlayer } from "react-intlayer";
+
 import { Link } from "@/components/localized-link";
+
+import logoImg from "#/assets/dac-logo.png";
+
 
 export const Footer: FC = () => {
 	const content = useIntlayer("footer");
 
 	return (
-		<footer className="border-t border-white/10 bg-black py-8">
-			<div className="mx-auto max-w-7xl px-6">
-				<div className="flex flex-col items-center justify-between gap-6 md:flex-row">
-					<div className="flex items-center gap-2">
-						<span className="text-xl font-bold tracking-wide text-white">DAC</span>
-						<span className="text-xs font-light tracking-widest text-white/50">
-							CONSTRUCTION
-						</span>
+		<footer className="border-t border-white/10 bg-[#0c0b0a] py-12 text-white">
+			<div className="mx-auto max-w-7xl px-6 sm:px-12">
+				<div className="flex flex-col items-center justify-between gap-8 md:flex-row">
+					{/* Logo */}
+					<div className="flex items-center gap-2 w-20">
+
+                        <img src={logoImg} alt="DAC logo" className="w-full object-contain" />
+
 					</div>
 
-					<nav className="flex gap-6">
+					{/* Nav links */}
+					<nav className="flex flex-wrap justify-center gap-8">
 						<Link
 							to="/about"
-							className="text-xs tracking-widest text-white/50 transition-colors hover:text-white"
+							className="font-sans text-xs font-medium tracking-widest text-white/60 transition-colors hover:text-accent"
 						>
 							{content.about.value}
 						</Link>
 						<Link
 							to="/services"
-							className="text-xs tracking-widest text-white/50 transition-colors hover:text-white"
+							className="font-sans text-xs font-medium tracking-widest text-white/60 transition-colors hover:text-accent"
 						>
 							{content.services.value}
 						</Link>
 						<Link
 							to="/projects"
-							className="text-xs tracking-widest text-white/50 transition-colors hover:text-white"
+							className="font-sans text-xs font-medium tracking-widest text-white/60 transition-colors hover:text-accent"
 						>
 							{content.projects.value}
 						</Link>
 						<Link
 							to="/contact"
-							className="text-xs tracking-widest text-white/50 transition-colors hover:text-white"
+							className="font-sans text-xs font-medium tracking-widest text-white/60 transition-colors hover:text-accent"
 						>
 							{content.contact.value}
 						</Link>
 					</nav>
 
-    				<p className="text-xs text-white/30">{content.rights.replace("{{year}}", new Date().getFullYear().toString())}</p>
+					{/* Copyright */}
+					<p className="font-sans text-xs text-white/40">
+						{content.rights.replace("{{year}}", new Date().getFullYear().toString())}
+					</p>
 				</div>
 			</div>
 		</footer>
