@@ -1,23 +1,32 @@
 import type { FC } from "react";
 
+import { useLocation } from "@tanstack/react-router";
+import { getPathWithoutLocale } from "intlayer";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Link as LocalizedLink, type To } from "./localized-link";
 import { LocaleSwitcher } from "./locale-switcher";
 
+import logoImg from "#/assets/dac-logo.png";
+
 const navLinks = [
+	{ to: "/", label: "Home" },
 	{ to: "/about", label: "ABOUT" },
-	{ to: "/services", label: "SERVICES" },
 	{ to: "/projects", label: "PROJECTS" },
-	{ to: "/clients", label: "CLIENTS" },
-	{ to: "/company", label: "COMPANY" },
+	{ to: "/services", label: "SERVICES" },
+	{ to: "/media", label: "Media" },
 	{ to: "/contact", label: "CONTACT" }
 ];
 
 export const Header: FC = () => {
+	const { pathname } = useLocation();
+	const pathWithoutLocale = getPathWithoutLocale(pathname);
+	const isHomePage = pathWithoutLocale === "/" || pathWithoutLocale === "";
+
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [scrolled, setScrolled] = useState(false);
+	const [introComplete, setIntroComplete] = useState(!isHomePage);
 
 	useEffect(() => {
 		const onScroll = () => setScrolled(window.scrollY > 0);
@@ -25,20 +34,38 @@ export const Header: FC = () => {
 		return () => window.removeEventListener("scroll", onScroll);
 	}, []);
 
+	useEffect(() => {
+		if (!isHomePage) {
+			setIntroComplete(true);
+			return;
+		}
+
+		const handleIntroComplete = () => {
+			setIntroComplete(true);
+		};
+
+		window.addEventListener("hero-intro-complete", handleIntroComplete);
+		return () => {
+			window.removeEventListener("hero-intro-complete", handleIntroComplete);
+		};
+	}, [isHomePage]);
+
 	return (
 		<header
-			className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
+			id="site-header"
+			className={`fixed top-0 left-0 right-0 z-40 py-3 transition-all duration-700 ${
 				scrolled
 					? "bg-black/80 backdrop-blur-sm"
 					: "bg-transparent backdrop-blur-md"
+			} ${
+				introComplete
+					? "opacity-100 translate-y-0 pointer-events-auto"
+					: "opacity-0 -translate-y-6 pointer-events-none"
 			}`}
 		>
-			<div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-				<LocalizedLink to="/" className="flex items-center gap-2 text-white">
-					<span className="text-xl font-bold tracking-wide">DAC</span>
-					<span className="hidden text-xs font-light tracking-widest text-white/70 sm:inline">
-						CONSTRUCTION
-					</span>
+			<div className="mx-auto flex h-auto max-w-7xl items-center justify-between px-6 sm:px-12">
+				<LocalizedLink to="/" className="flex items-center gap-2 text-white w-20 sm:w-24 py-1">
+					<img src={logoImg} alt="DAC logo" className="w-full object-contain" />
 				</LocalizedLink>
 
 				<nav className="hidden items-center gap-8 md:flex">
