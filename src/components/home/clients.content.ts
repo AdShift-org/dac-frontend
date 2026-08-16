@@ -4,10 +4,19 @@ const clientsContent = {
 	key: "home-clients",
 	content: {
 		label: t({
-			en: "CLUSTERS OF TRUST",
-			ar: "مَجمُوعَة عُملَائِنَا"
+			en: "CLIENTS & PARTNERS",
+			ar: "شُرَكَاءُ النَّجَاحِ وَالْعُمَلَاء"
 		}),
-		logos: ["EMAAR", "DAR AL ARKAN", "INTER IKEA", "ORC", "SOROUH", "DAR AL ARKAN", "EMAAR"]
+		egyptTitle: t({
+			en: "Clients of Egypt",
+			ar: "عملاء مصر"
+		}),
+		uaeTitle: t({
+			en: "Clients of DUBAI",
+			ar: "عملاء دبي"
+		}),
+		egyptLogos: ["EMAAR", "DANUBE PROPERTIES", "INTERMASS", "GULF ASIA", "ASCC"],
+		uaeLogos: ["EMAAR", "DANUBE PROPERTIES", "INTERMASS", "GULF ASIA", "ASCC"]
 	}
 } satisfies Dictionary;
 
