@@ -5,7 +5,7 @@ const clientsContent = {
 	content: {
 		label: t({
 			en: "CLIENTS & PARTNERS",
-			ar: "شُرَكَاءُ النَّجَاحِ وَالْعُمَلَاء"
+			ar: "شركاء النجاح والعملاء"
 		}),
 		egyptTitle: t({
 			en: "Clients of Egypt",

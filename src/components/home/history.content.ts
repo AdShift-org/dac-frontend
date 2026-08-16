@@ -5,11 +5,11 @@ const historyContent = {
 	content: {
 		heading: t({
 			en: "OUR HISTORY",
-			ar: "تَارِيخُنَا"
+			ar: "تاريخنا"
 		}),
 		subtitle: t({
 			en: "EVOLUTION OF EXCELLENCE",
-			ar: "تطوُّر التميّز"
+			ar: "تطور التميز"
 		}),
 		milestones: [
 			{
@@ -20,18 +20,18 @@ const historyContent = {
 				}),
 				description: t({
 					en: "Established in Cairo with a vision to bring international engineering standards to the region.",
-					ar: "تأسست في القاهرة برؤيةٍ لإدخال المعايير الهندسية العالمية إلى المنطقة."
+					ar: "تأسست في القاهرة برؤية لإدخال المعايير الهندسية العالمية إلى المنطقة"
 				})
 			},
 			{
 				year: "2014",
 				title: t({
 					en: "EXPANSION",
-					ar: "التوسُّع"
+					ar: "التوسع"
 				}),
 				description: t({
 					en: "Expanded operations to include comprehensive fit-out services and project management.",
-					ar: "وسّعنا عملياتنا لتشمل خدمات التشطيبات الشاملة وإدارة المشاريع."
+					ar: "وسعنا عملياتنا لتشمل خدمات التشطيبات الشاملة وإدارة المشاريع"
 				})
 			},
 			{
@@ -42,7 +42,7 @@ const historyContent = {
 				}),
 				description: t({
 					en: "Integrated sustainable and advanced BIM technologies to revolutionize our engineering processes.",
-					ar: "دمجنا تقنيات الاستدامة ونمذجة معلومات البناء المتقدمة لإحداث ثورة في عملياتنا الهندسية."
+					ar: "دمجنا تقنيات الاستدامة ونمذجة معلومات البناء المتقدمة لإحداث ثورة في عملياتنا الهندسية"
 				})
 			},
 			{
@@ -53,7 +53,7 @@ const historyContent = {
 				}),
 				description: t({
 					en: "Delivered our 1000th project, setting a benchmark in quality and excellence in the industry.",
-					ar: "سلّمنا مشروعنا رقم 1000، ما جعلنا معيارًا للجودة والتميّز في القطاع."
+					ar: "سلمنا مشروعنا رقم 1000، ما جعلنا معيارا للجودة والتميز في القطاع"
 				})
 			}
 		]

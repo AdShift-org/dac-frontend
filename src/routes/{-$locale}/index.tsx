@@ -1,7 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { defaultLocale } from 'intlayer'
+import { useIntlayer } from 'react-intlayer'
 
 import { seoFor } from '@/lib/seo'
+
+import dacLogo from '#/assets/dac-logo.png'
 
 import { Hero } from '@/components/home/hero'
 import { Statement } from '@/components/home/statement'
@@ -20,8 +23,22 @@ export const Route = createFileRoute('/{-$locale}/')({
 })
 
 function RouteComponent() {
+  const content = useIntlayer("home-noscript")
   return (
     <>
+      <noscript>
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center gap-8 bg-neutral-950 px-6 text-center text-white">
+          <img src={dacLogo} alt="DAC" className="w-40 object-contain" />
+          <div>
+            <h1 className="mb-3 font-serif text-2xl font-bold uppercase">
+              {content.title}
+            </h1>
+            <p className="font-sans text-sm leading-relaxed text-white/70">
+              {content.message}
+            </p>
+          </div>
+        </div>
+      </noscript>
       <Hero />
       <Statement />
       <History />

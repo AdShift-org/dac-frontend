@@ -1,7 +1,7 @@
 import { useRef, type FC } from "react";
 
 import { useGSAP } from "@gsap/react";
-import { useIntlayer } from "react-intlayer";
+import { useIntlayer, useLocale } from "react-intlayer";
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -17,6 +17,7 @@ const images = [emiratiPartner, ceo, generalManager, generalManager2];
 
 export const Leadership: FC = () => {
 	const content = useIntlayer("home-leadership");
+	const { locale } = useLocale();
 
 	const sectionRef = useRef<HTMLElement>(null);
 
@@ -59,7 +60,7 @@ export const Leadership: FC = () => {
 			window.addEventListener("load", onLoad);
 			return () => window.removeEventListener("load", onLoad);
 		},
-		{ scope: sectionRef }
+		{ scope: sectionRef, dependencies: [locale] }
 	);
 
 	return (

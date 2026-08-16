@@ -5,7 +5,7 @@ const featuredProjectsContent = {
 	content: {
 		label: t({
 			en: "PORTFOLIO",
-			ar: "مَحفَظة الأعمال"
+			ar: "محفظة الأعمال"
 		}),
 		heading: t({
 			en: "Featured Projects",
@@ -17,7 +17,7 @@ const featuredProjectsContent = {
 		}),
 		discover: t({
 			en: "DISCOVER PROJECT",
-			ar: "اِسْتَكْشِفِ الْمَشْرُوع"
+			ar: "استكشف المشروع"
 		}),
 		projects: [
 			{

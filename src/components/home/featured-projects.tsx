@@ -1,6 +1,6 @@
-import { useEffect, useRef, type FC } from "react";
+import { useLayoutEffect, useRef, type FC } from "react";
 
-import { useIntlayer } from "react-intlayer";
+import { useIntlayer, useLocale } from "react-intlayer";
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -21,12 +21,17 @@ const images = [
 
 export const FeaturedProjects: FC = () => {
 	const content = useIntlayer("home-featured-projects");
+	const { locale } = useLocale();
 
 	const sectionRef = useRef<HTMLElement>(null);
 	const trackRef = useRef<HTMLDivElement>(null);
 	const innerRef = useRef<HTMLDivElement>(null);
 
-	useEffect(() => {
+	// ponytail: must be useLayoutEffect — passive useEffect cleanup runs AFTER React
+	// removes the pinned <section> from the DOM, so GSAP's pin-spacer is still wrapping
+	// it and React's removeChild fails. Layout cleanup runs before the removal, unpinning
+	// the section back to a direct child first.
+	useLayoutEffect(() => {
 		const section = sectionRef.current;
 		const track = trackRef.current;
 		const inner = innerRef.current;
@@ -75,7 +80,7 @@ export const FeaturedProjects: FC = () => {
 			tl.scrollTrigger?.kill();
 			tl.kill();
 		};
-	}, []);
+	}, [locale]);
 
 	return (
 		<section

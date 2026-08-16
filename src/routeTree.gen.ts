@@ -13,6 +13,13 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as OgImageRouteImport } from './routes/og-image'
 import { Route as Char123LocaleChar125RouteRouteImport } from './routes/{-$locale}/route'
 import { Route as Char123LocaleChar125IndexRouteImport } from './routes/{-$locale}/index'
+import { Route as Char123LocaleChar125AboutRouteImport } from './routes/{-$locale}/about'
+import { Route as Char123LocaleChar125ContactRouteImport } from './routes/{-$locale}/contact'
+import { Route as Char123LocaleChar125MediaRouteImport } from './routes/{-$locale}/media'
+import { Route as Char123LocaleChar125ProjectsRouteImport } from './routes/{-$locale}/projects'
+import { Route as Char123LocaleChar125ServicesRouteImport } from './routes/{-$locale}/services'
+import { Route as Char123LocaleChar125ProjectsIndexRouteImport } from './routes/{-$locale}/projects.index'
+import { Route as Char123LocaleChar125ProjectsProjectIdRouteImport } from './routes/{-$locale}/projects.$projectId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -36,31 +43,125 @@ const Char123LocaleChar125IndexRoute =
     path: '/',
     getParentRoute: () => Char123LocaleChar125RouteRoute,
   } as any)
+const Char123LocaleChar125AboutRoute =
+  Char123LocaleChar125AboutRouteImport.update({
+    id: '/about',
+    path: '/about',
+    getParentRoute: () => Char123LocaleChar125RouteRoute,
+  } as any)
+const Char123LocaleChar125ContactRoute =
+  Char123LocaleChar125ContactRouteImport.update({
+    id: '/contact',
+    path: '/contact',
+    getParentRoute: () => Char123LocaleChar125RouteRoute,
+  } as any)
+const Char123LocaleChar125MediaRoute =
+  Char123LocaleChar125MediaRouteImport.update({
+    id: '/media',
+    path: '/media',
+    getParentRoute: () => Char123LocaleChar125RouteRoute,
+  } as any)
+const Char123LocaleChar125ProjectsRoute =
+  Char123LocaleChar125ProjectsRouteImport.update({
+    id: '/projects',
+    path: '/projects',
+    getParentRoute: () => Char123LocaleChar125RouteRoute,
+  } as any)
+const Char123LocaleChar125ServicesRoute =
+  Char123LocaleChar125ServicesRouteImport.update({
+    id: '/services',
+    path: '/services',
+    getParentRoute: () => Char123LocaleChar125RouteRoute,
+  } as any)
+const Char123LocaleChar125ProjectsIndexRoute =
+  Char123LocaleChar125ProjectsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => Char123LocaleChar125ProjectsRoute,
+  } as any)
+const Char123LocaleChar125ProjectsProjectIdRoute =
+  Char123LocaleChar125ProjectsProjectIdRouteImport.update({
+    id: '/$projectId',
+    path: '/$projectId',
+    getParentRoute: () => Char123LocaleChar125ProjectsRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/{-$locale}': typeof Char123LocaleChar125RouteRouteWithChildren
   '/og-image': typeof OgImageRoute
+  '/{-$locale}/about': typeof Char123LocaleChar125AboutRoute
+  '/{-$locale}/contact': typeof Char123LocaleChar125ContactRoute
+  '/{-$locale}/media': typeof Char123LocaleChar125MediaRoute
+  '/{-$locale}/projects': typeof Char123LocaleChar125ProjectsRouteWithChildren
+  '/{-$locale}/services': typeof Char123LocaleChar125ServicesRoute
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/projects/$projectId': typeof Char123LocaleChar125ProjectsProjectIdRoute
+  '/{-$locale}/projects/': typeof Char123LocaleChar125ProjectsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/og-image': typeof OgImageRoute
+  '/{-$locale}/about': typeof Char123LocaleChar125AboutRoute
+  '/{-$locale}/contact': typeof Char123LocaleChar125ContactRoute
+  '/{-$locale}/media': typeof Char123LocaleChar125MediaRoute
+  '/{-$locale}/services': typeof Char123LocaleChar125ServicesRoute
   '/{-$locale}': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/projects/$projectId': typeof Char123LocaleChar125ProjectsProjectIdRoute
+  '/{-$locale}/projects': typeof Char123LocaleChar125ProjectsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/{-$locale}': typeof Char123LocaleChar125RouteRouteWithChildren
   '/og-image': typeof OgImageRoute
+  '/{-$locale}/about': typeof Char123LocaleChar125AboutRoute
+  '/{-$locale}/contact': typeof Char123LocaleChar125ContactRoute
+  '/{-$locale}/media': typeof Char123LocaleChar125MediaRoute
+  '/{-$locale}/projects': typeof Char123LocaleChar125ProjectsRouteWithChildren
+  '/{-$locale}/services': typeof Char123LocaleChar125ServicesRoute
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
+  '/{-$locale}/projects/$projectId': typeof Char123LocaleChar125ProjectsProjectIdRoute
+  '/{-$locale}/projects/': typeof Char123LocaleChar125ProjectsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/{-$locale}' | '/og-image' | '/{-$locale}/'
+  fullPaths:
+    | '/'
+    | '/{-$locale}'
+    | '/og-image'
+    | '/{-$locale}/about'
+    | '/{-$locale}/contact'
+    | '/{-$locale}/media'
+    | '/{-$locale}/projects'
+    | '/{-$locale}/services'
+    | '/{-$locale}/'
+    | '/{-$locale}/projects/$projectId'
+    | '/{-$locale}/projects/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/og-image' | '/{-$locale}'
-  id: '__root__' | '/' | '/{-$locale}' | '/og-image' | '/{-$locale}/'
+  to:
+    | '/'
+    | '/og-image'
+    | '/{-$locale}/about'
+    | '/{-$locale}/contact'
+    | '/{-$locale}/media'
+    | '/{-$locale}/services'
+    | '/{-$locale}'
+    | '/{-$locale}/projects/$projectId'
+    | '/{-$locale}/projects'
+  id:
+    | '__root__'
+    | '/'
+    | '/{-$locale}'
+    | '/og-image'
+    | '/{-$locale}/about'
+    | '/{-$locale}/contact'
+    | '/{-$locale}/media'
+    | '/{-$locale}/projects'
+    | '/{-$locale}/services'
+    | '/{-$locale}/'
+    | '/{-$locale}/projects/$projectId'
+    | '/{-$locale}/projects/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -99,15 +200,93 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125IndexRouteImport
       parentRoute: typeof Char123LocaleChar125RouteRoute
     }
+    '/{-$locale}/about': {
+      id: '/{-$locale}/about'
+      path: '/about'
+      fullPath: '/{-$locale}/about'
+      preLoaderRoute: typeof Char123LocaleChar125AboutRouteImport
+      parentRoute: typeof Char123LocaleChar125RouteRoute
+    }
+    '/{-$locale}/contact': {
+      id: '/{-$locale}/contact'
+      path: '/contact'
+      fullPath: '/{-$locale}/contact'
+      preLoaderRoute: typeof Char123LocaleChar125ContactRouteImport
+      parentRoute: typeof Char123LocaleChar125RouteRoute
+    }
+    '/{-$locale}/media': {
+      id: '/{-$locale}/media'
+      path: '/media'
+      fullPath: '/{-$locale}/media'
+      preLoaderRoute: typeof Char123LocaleChar125MediaRouteImport
+      parentRoute: typeof Char123LocaleChar125RouteRoute
+    }
+    '/{-$locale}/projects': {
+      id: '/{-$locale}/projects'
+      path: '/projects'
+      fullPath: '/{-$locale}/projects'
+      preLoaderRoute: typeof Char123LocaleChar125ProjectsRouteImport
+      parentRoute: typeof Char123LocaleChar125RouteRoute
+    }
+    '/{-$locale}/services': {
+      id: '/{-$locale}/services'
+      path: '/services'
+      fullPath: '/{-$locale}/services'
+      preLoaderRoute: typeof Char123LocaleChar125ServicesRouteImport
+      parentRoute: typeof Char123LocaleChar125RouteRoute
+    }
+    '/{-$locale}/projects/': {
+      id: '/{-$locale}/projects/'
+      path: '/'
+      fullPath: '/{-$locale}/projects/'
+      preLoaderRoute: typeof Char123LocaleChar125ProjectsIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125ProjectsRoute
+    }
+    '/{-$locale}/projects/$projectId': {
+      id: '/{-$locale}/projects/$projectId'
+      path: '/$projectId'
+      fullPath: '/{-$locale}/projects/$projectId'
+      preLoaderRoute: typeof Char123LocaleChar125ProjectsProjectIdRouteImport
+      parentRoute: typeof Char123LocaleChar125ProjectsRoute
+    }
   }
 }
 
+interface Char123LocaleChar125ProjectsRouteChildren {
+  Char123LocaleChar125ProjectsProjectIdRoute: typeof Char123LocaleChar125ProjectsProjectIdRoute
+  Char123LocaleChar125ProjectsIndexRoute: typeof Char123LocaleChar125ProjectsIndexRoute
+}
+
+const Char123LocaleChar125ProjectsRouteChildren: Char123LocaleChar125ProjectsRouteChildren =
+  {
+    Char123LocaleChar125ProjectsProjectIdRoute:
+      Char123LocaleChar125ProjectsProjectIdRoute,
+    Char123LocaleChar125ProjectsIndexRoute:
+      Char123LocaleChar125ProjectsIndexRoute,
+  }
+
+const Char123LocaleChar125ProjectsRouteWithChildren =
+  Char123LocaleChar125ProjectsRoute._addFileChildren(
+    Char123LocaleChar125ProjectsRouteChildren,
+  )
+
 interface Char123LocaleChar125RouteRouteChildren {
+  Char123LocaleChar125AboutRoute: typeof Char123LocaleChar125AboutRoute
+  Char123LocaleChar125ContactRoute: typeof Char123LocaleChar125ContactRoute
+  Char123LocaleChar125MediaRoute: typeof Char123LocaleChar125MediaRoute
+  Char123LocaleChar125ProjectsRoute: typeof Char123LocaleChar125ProjectsRouteWithChildren
+  Char123LocaleChar125ServicesRoute: typeof Char123LocaleChar125ServicesRoute
   Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
 }
 
 const Char123LocaleChar125RouteRouteChildren: Char123LocaleChar125RouteRouteChildren =
   {
+    Char123LocaleChar125AboutRoute: Char123LocaleChar125AboutRoute,
+    Char123LocaleChar125ContactRoute: Char123LocaleChar125ContactRoute,
+    Char123LocaleChar125MediaRoute: Char123LocaleChar125MediaRoute,
+    Char123LocaleChar125ProjectsRoute:
+      Char123LocaleChar125ProjectsRouteWithChildren,
+    Char123LocaleChar125ServicesRoute: Char123LocaleChar125ServicesRoute,
     Char123LocaleChar125IndexRoute: Char123LocaleChar125IndexRoute,
   }
 

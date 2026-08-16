@@ -9,23 +9,23 @@ const heroContent = {
 		}),
 		headline1: t({
 			en: "BUILDING THE",
-			ar: "نَبْنِي"
+			ar: "نبني"
 		}),
 		headline2: t({
 			en: "FUTURE WITH",
-			ar: "الْمُسْتَقْبَلَ بِكُلِّ"
+			ar: "المستقبل بكل"
 		}),
 		headline3: t({
 			en: "PRECISION",
-			ar: "إِتْقَانٍ وَدِقَّة"
+			ar: "إتقان ودقة"
 		}),
 		subtitle: t({
 			en: "A leading construction and real estate development company delivering integrated solutions across Egypt and the UAE.",
-			ar: "شركة رائدة في قطاع الإنشاءات والتطوير العقاري تُقدِّم حلولاً متكاملة عبر مصر والإمارات."
+			ar: "شركة رائدة في قطاع الإنشاءات والتطوير العقاري تقدم حلولا متكاملة عبر مصر والإمارات"
 		}),
 		cta: t({
 			en: "EXPLORE OUR WORK",
-			ar: "اِسْتَكْشِفْ أَعْمَالَنَا"
+			ar: "استكشف أعمالنا"
 		}),
 		scroll: t({
 			en: "SCROLL",

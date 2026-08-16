@@ -5,23 +5,23 @@ const footerContent = {
 	content: {
 		about: t({
 			en: "ABOUT",
-			ar: "مَنْ نَحْن"
+			ar: "من نحن"
 		}),
 		services: t({
 			en: "SERVICES",
-			ar: "الخِدْمَات"
+			ar: "الخدمات"
 		}),
 		projects: t({
 			en: "PROJECTS",
-			ar: "المَشَارِيع"
+			ar: "المشاريع"
 		}),
 		contact: t({
 			en: "CONTACT",
-			ar: "تَوَاصَلْ مَعَنَا"
+			ar: "تواصل معنا"
 		}),
 		rights: t({
 			en: "© {{year}} DAC Construction. All rights reserved.",
-			ar: "© {{year}} شركة DAC للمقاولات. جميع الحقوق محفوظة."
+			ar: "© {{year}} شركة DAC للمقاولات جميع الحقوق محفوظة"
 		})
 	}
 } satisfies Dictionary;

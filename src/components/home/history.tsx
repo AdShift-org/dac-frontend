@@ -1,7 +1,7 @@
 import { useRef, type FC } from "react";
 
 import { useGSAP } from "@gsap/react";
-import { useIntlayer } from "react-intlayer";
+import { useIntlayer, useLocale } from "react-intlayer";
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -10,6 +10,7 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export const History: FC = () => {
 	const content = useIntlayer("home-history");
+	const { locale } = useLocale();
 
 	const sectionRef = useRef<HTMLElement>(null);
 
@@ -55,7 +56,7 @@ export const History: FC = () => {
 			window.addEventListener("load", onLoad);
 			return () => window.removeEventListener("load", onLoad);
 		},
-		{ scope: sectionRef }
+		{ scope: sectionRef, dependencies: [locale] }
 	);
 
 	return (

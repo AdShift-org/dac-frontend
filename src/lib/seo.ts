@@ -11,10 +11,13 @@ export function seoFor(key: string, path: string, locale: string) {
 	const url = getLocalizedUrl(`${siteUrl}${path}`, locale);
 	const ogImage = `${siteUrl}/og-image?title=${encodeURIComponent(meta.title)}&description=${encodeURIComponent(meta.description)}`;
 
+	const schemaType = "schemaType" in meta ? meta.schemaType : "WebPage";
+	const schemaName = "schemaName" in meta ? meta.schemaName : meta.title;
+
 	const schema = {
 		"@context": "https://schema.org",
-		"@type": meta.schemaType ?? "WebPage",
-		name: meta.schemaName ?? meta.title,
+		"@type": schemaType,
+		name: schemaName,
 		description: meta.description,
 		url,
 		inLanguage: locale,
