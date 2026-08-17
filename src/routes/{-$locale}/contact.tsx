@@ -3,6 +3,9 @@ import { defaultLocale } from "intlayer";
 
 import { seoFor } from "@/lib/seo";
 
+import { Hero, Offices, InquiryForm } from "@/components/contact";
+import { Footer } from "@/components/footer";
+
 export const Route = createFileRoute("/{-$locale}/contact")({
 	head: ({ params }) => seoFor("contact", "/contact", params.locale ?? defaultLocale),
 	component: RouteComponent
@@ -10,8 +13,11 @@ export const Route = createFileRoute("/{-$locale}/contact")({
 
 function RouteComponent() {
 	return (
-		<section className="flex min-h-screen items-center justify-center bg-neutral-950 text-white">
-			<h1 className="font-serif text-4xl font-bold uppercase">Contact</h1>
-		</section>
+		<main className="min-h-screen bg-[#fcfbf9]">
+			<Hero />
+			<Offices />
+			<InquiryForm />
+			<Footer />
+		</main>
 	);
 }
