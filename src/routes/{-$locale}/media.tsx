@@ -1,4 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
+
 import { defaultLocale } from "intlayer";
 
 import { seoFor } from "@/lib/seo";
@@ -9,9 +10,5 @@ export const Route = createFileRoute("/{-$locale}/media")({
 });
 
 function RouteComponent() {
-	return (
-		<section className="flex min-h-screen items-center justify-center bg-neutral-950 text-white">
-			<h1 className="font-serif text-4xl font-bold uppercase">Media</h1>
-		</section>
-	);
+	return <Outlet />;
 }
