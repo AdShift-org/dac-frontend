@@ -8,11 +8,11 @@ const clientsContent = {
 			ar: "شركاء النجاح والعملاء"
 		}),
 		egyptTitle: t({
-			en: "Clients of Egypt",
+			en: "Clients in Egypt",
 			ar: "عملاء مصر"
 		}),
 		uaeTitle: t({
-			en: "Clients of DUBAI",
+			en: "Clients in DUBAI",
 			ar: "عملاء دبي"
 		}),
 		egyptLogos: ["EMAAR", "DANUBE PROPERTIES", "INTERMASS", "GULF ASIA", "ASCC"],
