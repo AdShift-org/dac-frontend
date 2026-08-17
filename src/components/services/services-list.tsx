@@ -1,8 +1,9 @@
-import { useRef, type FC } from "react";
+import { useMemo, useRef, type FC } from "react";
 
 import { useIntlayer, useLocale } from "react-intlayer";
 
 import { Link } from "@/components/localized-link";
+import { useCmsData } from "@/lib/cms";
 
 import { cn } from "@/lib/utils";
 
@@ -16,7 +17,41 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export const ServicesList: FC = () => {
 	const content = useIntlayer("services-list");
 	const { locale } = useLocale();
+	const { services } = useCmsData();
 	const containerRef = useRef<HTMLDivElement>(null);
+
+	const items = useMemo(() => {
+		const api = services ?? [];
+		if (!api.length) {
+			return content.items.map((it) => ({
+				tag: it.tag.value,
+				title: it.title.value,
+				description: it.description.value,
+				buttonText: it.buttonText.value,
+				image: it.image.value,
+				imageAlt: it.imageAlt.value,
+				theme: it.theme.value as "dark" | "light"
+			}));
+		}
+
+		return api.map((raw, i) => {
+			const s = (locale === "ar" ? raw.ar : raw.en) as {
+				name?: string;
+				description?: string | null;
+				image?: string | null;
+			};
+			const fb = content.items[i % content.items.length];
+			return {
+				tag: fb.tag.value,
+				title: s.name || fb.title.value,
+				description: s.description || fb.description.value,
+				buttonText: fb.buttonText.value,
+				image: s.image || fb.image.value,
+				imageAlt: s.name || fb.imageAlt.value,
+				theme: fb.theme.value as "dark" | "light"
+			};
+		});
+	}, [services, locale, content]);
 
 	useGSAP(
 		() => {
@@ -58,9 +93,9 @@ export const ServicesList: FC = () => {
 
 	return (
 		<div id="services-grid" ref={containerRef} className="w-full">
-			{content.items.map((item, index) => {
+			{items.map((item, index) => {
 				const isEven = index % 2 === 0;
-				const isDark = item.theme.value === "dark";
+				const isDark = item.theme === "dark";
 
 				return (
 					<section
@@ -92,7 +127,7 @@ export const ServicesList: FC = () => {
 											isDark ? "text-neutral-400" : "text-neutral-500"
 										)}
 									>
-										{item.tag.value}
+										{item.tag}
 									</span>
 
 									<h2
@@ -101,7 +136,7 @@ export const ServicesList: FC = () => {
 											isDark ? "text-white" : "text-neutral-900"
 										)}
 									>
-										{item.title.value}
+										{item.title}
 									</h2>
 
 									<p
@@ -110,7 +145,7 @@ export const ServicesList: FC = () => {
 											isDark ? "text-neutral-300" : "text-neutral-600"
 										)}
 									>
-										{item.description.value}
+										{item.description}
 									</p>
 
 									<div className="mt-8">
@@ -123,7 +158,7 @@ export const ServicesList: FC = () => {
 													: "border-neutral-900/30 text-neutral-900 hover:border-neutral-900 hover:bg-neutral-900/5"
 											)}
 										>
-											<span>{item.buttonText.value}</span>
+											<span>{item.buttonText}</span>
 											<ArrowRight className="size-3.5 transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
 										</Link>
 									</div>
@@ -140,8 +175,8 @@ export const ServicesList: FC = () => {
 								>
 									<div className="group relative aspect-[16/10] w-full overflow-hidden rounded-sm bg-neutral-900 shadow-xl">
 										<img
-											src={item.image.value}
-											alt={item.imageAlt.value}
+											src={item.image}
+											alt={item.imageAlt}
 											loading="lazy"
 											className="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
 										/>

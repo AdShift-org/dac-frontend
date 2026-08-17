@@ -1,3 +1,5 @@
+import type { Project } from "@/lib/cms";
+
 export interface ProjectMetric {
 	label: { en: string; ar: string };
 	value: string;
@@ -610,5 +612,85 @@ export function getProjectDetailById(id: string): ProjectDetailData {
 				}
 			]
 		} : undefined
+	};
+}
+
+export function getProjectDetail(projectId: string, api?: Project | null): ProjectDetailData {
+	if (!api) return getProjectDetailById(projectId);
+
+	const en = api.en as {
+		slug?: string;
+		title?: string | null;
+		name?: string;
+		description?: string | null;
+		location?: string | null;
+		status?: string;
+		completed_at?: string | null;
+		delivery_year?: number | null;
+		delivery_quarter?: number | null;
+		total_units?: number | null;
+		area?: string | null;
+		starting_price?: number | null;
+		images?: string[];
+		timeline_image?: string | null;
+		timelines?: {
+			en: { title?: string | null; description?: string | null; year?: number };
+			ar: { title_ar?: string | null; description_ar?: string | null };
+		}[];
+	};
+	const ar = api.ar as {
+		title_ar?: string | null;
+		name_ar?: string;
+		description_ar?: string | null;
+		location_ar?: string | null;
+		status?: string;
+	};
+
+	const status = en.status ?? "";
+	const isUnderConstruction = status === "in-progress" || status === "ongoing";
+
+	const galleryImages = (en.images ?? []).map((url, i) => ({
+		image: url,
+		indexTag: `${String(i + 1).padStart(2, "0")}/`,
+		alt: { en: en.name ?? "", ar: ar.name_ar ?? "" }
+	}));
+
+	const timelineMilestones = (en.timelines ?? []).map((t, i) => ({
+		step: `${String(i + 1).padStart(2, "0")}/${String(en.timelines!.length).padStart(2, "0")}`,
+		title: { en: t.en.title ?? "", ar: t.ar.title_ar ?? "" },
+		description: { en: t.en.description ?? "", ar: t.ar.description_ar ?? "" },
+		date: t.en.year ? String(t.en.year) : undefined,
+		status: "completed" as const
+	}));
+
+	const metrics: ProjectMetric[] = [];
+	if (en.total_units) metrics.push({ label: { en: "Total Units", ar: "إجمالي الوحدات" }, value: String(en.total_units) });
+	if (en.area) metrics.push({ label: { en: "Built Area", ar: "المساحة المبنية" }, value: en.area });
+	if (en.delivery_year) metrics.push({ label: { en: "Delivery Date", ar: "تاريخ التسليم" }, value: `Q${en.delivery_quarter ?? "-"} ${en.delivery_year}` });
+	if (en.starting_price) metrics.push({ label: { en: "Starting Price", ar: "يبدأ السعر من" }, value: String(en.starting_price) });
+
+	return {
+		id: en.slug ?? projectId,
+		title: { en: en.title ?? en.name ?? "", ar: ar.title_ar ?? ar.name_ar ?? "" },
+		tagline: { en: en.description ?? "", ar: ar.description_ar ?? "" },
+		categoryBreadcrumb: { en: "", ar: "" },
+		location: { en: en.location ?? "", ar: ar.location_ar ?? "" },
+		year: en.delivery_year?.toString() ?? en.completed_at ?? "",
+		heroImage: en.images?.[0] ?? "",
+		isUnderConstruction,
+		statusLabel: { en: status, ar: status },
+		overviewTitle: { en: "", ar: "" },
+		overviewParagraphs: { en: [], ar: [] },
+		metrics,
+		galleryImages,
+		timelineTitle: { en: "", ar: "" },
+		timelineImage: en.timeline_image ?? "",
+		timelineMilestones,
+		amenitiesTitle: { en: "", ar: "" },
+		amenities: [],
+		videosTitle: { en: "", ar: "" },
+		videosSubtitle: { en: "", ar: "" },
+		videos: [],
+		progress: undefined
 	};
 }

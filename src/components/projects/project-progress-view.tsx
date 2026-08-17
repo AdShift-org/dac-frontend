@@ -6,7 +6,8 @@ import { ArrowLeft } from "lucide-react";
 
 import { Link } from "@/components/localized-link";
 import { Cta } from "@/components/home/cta";
-import { getProjectDetailById, type ProjectDetailData } from "./project-detail-data";
+import { useCmsData } from "@/lib/cms";
+import { getProjectDetail, type ProjectDetailData } from "./project-detail-data";
 import { ProjectProgressHero } from "./project-progress-hero";
 import { ProjectStory } from "./project-progress-story";
 import { ProjectProgressDashboard } from "./project-progress-dashboard";
@@ -22,7 +23,10 @@ export const ProjectProgressView: FC<ProjectProgressViewProps> = ({ projectId })
 	const { locale } = useLocale();
 	const isArabic = locale === "ar";
 
-	const project: ProjectDetailData = getProjectDetailById(projectId);
+	const { projects } = useCmsData();
+	const apiProject = (projects ?? []).find((p) => p.en.slug === projectId || p.ar.slug === projectId);
+
+	const project: ProjectDetailData = getProjectDetail(projectId, apiProject);
 
 	// 404 GUARD: If project has no progress data or is not under construction
 	if (!project || !project.isUnderConstruction || !project.progress) {

@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, type FC } from "react";
+import { useLayoutEffect, useMemo, useRef, type FC } from "react";
 
 import { useIntlayer, useLocale } from "react-intlayer";
 
@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight } from "lucide-react";
 
 import { Link } from "../localized-link";
+import { useCmsData } from "@/lib/cms";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,6 +25,38 @@ const images = [
 export const FeaturedProjects: FC = () => {
 	const content = useIntlayer("home-featured-projects");
 	const { locale } = useLocale();
+	const { projects: projectsData } = useCmsData();
+
+	const projects = useMemo(() => {
+		const api = projectsData ?? [];
+		if (!api.length) {
+			return content.projects.map((p) => ({
+				slug: p.name.value,
+				name: p.name.value,
+				location: p.location.value,
+				category: p.category?.value ?? p.location.value,
+				year: p.year ?? "2026"
+			}));
+		}
+
+		return api.map((raw) => {
+			const p = (locale === "ar" ? raw.ar : raw.en) as {
+				slug: string;
+				name?: string;
+				title?: string | null;
+				location?: string | null;
+				delivery_year?: number | null;
+				service?: { en: { name: string }; ar: { name: string } } | null;
+			};
+			return {
+				slug: p.slug,
+				name: (p.name ?? p.title) || "",
+				location: p.location ?? "",
+				category: p.service ? (locale === "ar" ? p.service.ar.name : p.service.en.name) : "",
+				year: p.delivery_year ? String(p.delivery_year) : "2026"
+			};
+		});
+	}, [projectsData, locale, content]);
 
 	const sectionRef = useRef<HTMLElement>(null);
 	const trackRef = useRef<HTMLDivElement>(null);
@@ -43,6 +76,10 @@ export const FeaturedProjects: FC = () => {
 
 		const getAmount = () => Math.max(track.scrollWidth - track.clientWidth, 0);
 
+		// ponytail: scale the fade to the scroll distance — with few projects there's
+		// little distance, so a fixed fade blinks the cards out before they're readable
+		const fadeDur = Math.min(0.12, getAmount() / 6000);
+
 		const tl = gsap.timeline({
 			scrollTrigger: {
 				trigger: section,
@@ -59,7 +96,7 @@ export const FeaturedProjects: FC = () => {
 		tl.fromTo(
 			inner,
 			{ autoAlpha: 0, y: 40 },
-			{ autoAlpha: 1, y: 0, duration: 0.12, ease: "power2.out" },
+			{ autoAlpha: 1, y: 0, duration: fadeDur, ease: "power2.out" },
 			0
 		)
 			.fromTo(
@@ -70,9 +107,9 @@ export const FeaturedProjects: FC = () => {
 					duration: 1,
 					ease: "none"
 				},
-				0.12
+				fadeDur
 			)
-			.to(inner, { autoAlpha: 0, y: -40, duration: 0.12, ease: "power2.in" }, "+=0.02");
+			.to(inner, { autoAlpha: 0, y: -40, duration: fadeDur, ease: "power2.in" }, "+=0.02");
 
 		const refresh = () => ScrollTrigger.refresh();
 		window.addEventListener("load", refresh);
@@ -82,7 +119,7 @@ export const FeaturedProjects: FC = () => {
 			tl.scrollTrigger?.kill();
 			tl.kill();
 		};
-	}, [locale]);
+	}, []);
 
 	return (
 		<section
@@ -114,9 +151,9 @@ export const FeaturedProjects: FC = () => {
 					ref={trackRef}
 					className="mt-12 flex scroll-fade-x [scrollbar-width:none] gap-8 overflow-x-auto sm:gap-10 [&::-webkit-scrollbar]:hidden"
 				>
-					{content.projects.map((project, index) => (
+					{projects.map((project, index) => (
 						<div
-							key={index}
+							key={project.slug}
 							className="group relative aspect-[16/10] w-[88vw] shrink-0 overflow-hidden rounded-sm bg-neutral-900 shadow-2xl sm:w-[60vw] lg:w-[42rem]"
 						>
 							{/* Background architectural image */}
@@ -135,17 +172,17 @@ export const FeaturedProjects: FC = () => {
 								{/* Top: Project Title */}
 								<div>
 									<h3 className="font-serif text-2xl font-normal tracking-wider text-white uppercase sm:text-3xl lg:text-4xl">
-										{project.name.value}
+										{project.name}
 									</h3>
 								</div>
 
 								{/* Middle: Details (Location, Category, Year) */}
 								<div className="my-auto space-y-1 py-4">
 									<p className="font-sans text-sm font-light text-neutral-300 sm:text-base">
-										{project.location.value}
+										{project.location}
 									</p>
 									<p className="font-sans text-sm font-light text-neutral-400 sm:text-base">
-										{project.category?.value ?? project.location.value}
+										{project.category || project.location}
 									</p>
 									<p className="pt-1 font-sans text-sm font-medium text-neutral-300">
 										{project.year ?? "2026"}
@@ -155,7 +192,7 @@ export const FeaturedProjects: FC = () => {
 								{/* Bottom: Discover Project Link */}
 								<Link
 									to="/projects/$projectId"
-									params={{ projectId: project.name.value }}
+									params={{ projectId: project.slug }}
 									className="group/link outline-none"
 								>
 									<span className="p-4 font-sans text-xs font-semibold tracking-[0.2em] text-accent uppercase transition-colors group-hover:text-white group-focus-visible/link:bg-white/20 hover:bg-white/20 sm:text-sm">

@@ -18,8 +18,8 @@ const servicesListContent = {
 					ar: "نبتكر مساحات تجارية وسكنية حديثة ومستدامة. نعمل على تحسين العمارة وهيكلة المساحات الحضرية لكل عميل، مما يضمن أن يقف كل مشروع كشاهد على التميز الشامل والقيمة الدائمة."
 				}),
 				buttonText: t({
-					en: "EXPLORE SERVICES",
-					ar: "استكشف الخدمات"
+					en: "EXPLORE PROJECTS",
+					ar: "استكشف المشروعات"
 				}),
 				image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1400",
 				imageAlt: t({

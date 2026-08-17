@@ -1,24 +1,62 @@
 import { useMemo, useState, type FC } from "react";
 
-import { useIntlayer } from "react-intlayer";
+import { useIntlayer, useLocale } from "react-intlayer";
 
 import { ArrowRight, ChevronDown, RotateCcw, Sparkles } from "lucide-react";
 
 import { Link } from "@/components/localized-link";
+import { useCmsData } from "@/lib/cms";
 
 export const ProjectsList: FC = () => {
 	const content = useIntlayer("projects-list");
+	const { locale } = useLocale();
+	const { projects } = useCmsData();
 
 	// Filter state
 	const [statusFilter, setStatusFilter] = useState<string>("all");
 	const [typologyFilter, setTypologyFilter] = useState<string>("all");
 	const [sectorFilter, setSectorFilter] = useState<string>("all");
 
-	// Spotlight item
+	// Spotlight item (curated fallback; backend has no featured concept)
 	const spotlight = content.spotlight;
 
 	// All items
-	const items = content.items;
+	const items = useMemo(() => {
+		const api = projects ?? [];
+		if (!api.length) return content.items;
+
+		return api.map((raw) => {
+			const p = (locale === "ar" ? raw.ar : raw.en) as {
+				slug: string;
+				status: string;
+				title?: string | null;
+				name?: string;
+				description?: string | null;
+				location?: string | null;
+				area?: string | null;
+				delivery_year?: number | null;
+				images?: string[];
+				service?: { en: { name: string }; ar: { name: string } } | null;
+			};
+			const service = p.service ? (locale === "ar" ? p.service.ar : p.service.en) : null;
+
+			return {
+				id: { value: p.slug },
+				statusKey: { value: p.status },
+				typologyKey: { value: "" },
+				sectorKey: { value: "" },
+				badge: { value: "PROJECT" },
+				title: { value: (p.title || p.name) ?? "" },
+				description: { value: p.description ?? "" },
+				year: { value: p.delivery_year ? String(p.delivery_year) : "" },
+				location: { value: p.location ?? "" },
+				sector: { value: service ? service.name : "" },
+				status: { value: p.status },
+				area: { value: p.area ?? "" },
+				image: { value: p.images?.[0] ?? "" }
+			};
+		});
+	}, [projects, locale, content]);
 
 	// Filter options
 	const statusOptions = useMemo(

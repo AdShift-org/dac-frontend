@@ -3,6 +3,8 @@ import { useRef, type FC } from "react";
 import { useGSAP } from "@gsap/react";
 import { useIntlayer, useLocale } from "react-intlayer";
 
+import { useCmsData } from "@/lib/cms";
+
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight, Plus } from "lucide-react";
@@ -12,6 +14,15 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export const Services: FC = () => {
 	const content = useIntlayer("home-services");
 	const { locale } = useLocale();
+	const { services } = useCmsData();
+
+	const serviceNames =
+		(services ?? []).length > 0
+			? services!.map((raw) => {
+					const name = (locale === "ar" ? raw.ar.name_ar : raw.en.name) || "";
+					return name;
+				})
+			: content.services.map((s) => s.value);
 
 	const sectionRef = useRef<HTMLElement>(null);
 
@@ -94,7 +105,7 @@ export const Services: FC = () => {
 
 					{/* Right Column - Service Items */}
 					<div className="sv-list divide-y divide-neutral-200 lg:col-span-7">
-						{content.services.map((service, index) => (
+						{serviceNames.map((service, index) => (
 							<div
 								key={index}
 								className="sv-row group flex cursor-pointer items-center justify-between py-8 transition-colors hover:bg-neutral-100/50 sm:py-10"
@@ -104,7 +115,7 @@ export const Services: FC = () => {
 										—
 									</span>
 									<h3 className="font-sans text-xl font-extrabold tracking-tight text-neutral-900 uppercase transition-colors group-hover:text-accent sm:text-2xl lg:text-3xl">
-										{service.value}
+										{service}
 									</h3>
 								</div>
 								<div className="sv-plus flex size-8 items-center justify-center rounded-full border border-neutral-300 text-neutral-500 transition-colors group-hover:border-accent group-hover:bg-accent group-hover:text-neutral-950 sm:size-10">
