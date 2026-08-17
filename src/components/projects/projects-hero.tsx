@@ -98,7 +98,7 @@ export const ProjectsHero: FC = () => {
 			<div className="relative z-10 mx-auto w-full max-w-7xl">
 				<div className="max-w-3xl">
 					{/* Index indicator */}
-					<div className="pj-hero-index mb-4 font-mono text-xs tracking-widest text-neutral-400">
+					<div className="pj-hero-index mb-4 font-sans text-xs tracking-widest text-neutral-400">
 						{content.index.value}
 					</div>
 
@@ -132,7 +132,7 @@ export const ProjectsHero: FC = () => {
 			<button
 				type="button"
 				onClick={scrollToPortfolio}
-				className="pj-hero-scroll absolute bottom-10 left-6 sm:left-12 lg:left-20 flex size-10 items-center justify-center rounded-full border border-white/20 text-white/70 backdrop-blur-xs transition-colors hover:border-white hover:text-white"
+				className="pj-hero-scroll absolute bottom-10 left-6 flex size-10 items-center justify-center rounded-full border border-white/20 text-white/70 backdrop-blur-xs transition-colors hover:border-white hover:text-white sm:left-12 lg:left-20"
 				aria-label="Scroll to projects"
 			>
 				<ArrowDown className="size-4" />

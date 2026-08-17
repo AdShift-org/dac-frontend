@@ -2,13 +2,14 @@ import { useRef, type FC } from "react";
 
 import { useIntlayer, useLocale } from "react-intlayer";
 
+import { Link } from "@/components/localized-link";
+
+import { cn } from "@/lib/utils";
+
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight } from "lucide-react";
-
-import { Link } from "@/components/localized-link";
-import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -65,7 +66,7 @@ export const ServicesList: FC = () => {
 					<section
 						key={index}
 						className={cn(
-							"srv-row relative py-20 sm:py-28 lg:py-36 transition-colors",
+							"srv-row relative py-20 transition-colors sm:py-28 lg:py-36",
 							isDark ? "bg-[#12110e] text-white" : "bg-white text-neutral-900"
 						)}
 					>
@@ -87,7 +88,7 @@ export const ServicesList: FC = () => {
 								>
 									<span
 										className={cn(
-											"font-mono text-xs font-semibold tracking-widest uppercase",
+											"font-sans text-xs font-semibold tracking-widest uppercase",
 											isDark ? "text-neutral-400" : "text-neutral-500"
 										)}
 									>

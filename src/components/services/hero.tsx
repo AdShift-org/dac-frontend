@@ -2,12 +2,13 @@ import { useRef, type FC } from "react";
 
 import { useIntlayer, useLocale } from "react-intlayer";
 
+import { Link } from "@/components/localized-link";
+
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ArrowDown, ArrowRight } from "lucide-react";
 
 import heroImg from "#/assets/home/hero.png";
-import { Link } from "@/components/localized-link";
 
 export const Hero: FC = () => {
 	const content = useIntlayer("services-hero");
@@ -96,7 +97,7 @@ export const Hero: FC = () => {
 			<div className="relative z-10 mx-auto w-full max-w-7xl">
 				<div className="max-w-3xl">
 					{/* Tag / Number Indicator */}
-					<div className="srv-hero-tag mb-4 font-mono text-xs font-semibold tracking-widest text-neutral-400">
+					<div className="srv-hero-tag mb-4 font-sans text-xs font-semibold tracking-widest text-neutral-400">
 						{content.tag.value}
 					</div>
 
