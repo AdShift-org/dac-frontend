@@ -5,7 +5,7 @@ const statsContent = {
 	content: {
 		heading: t({
 			ar: "أرقامنا",
-			en: "OUR NUMBERS"
+			en: "DAC by numbers"
 		}),
 		subtitle: t({
 			ar: "إنجازات تترجم التزامنا المستمر بالريادة والإتقان في قطاع الإنشاءات",

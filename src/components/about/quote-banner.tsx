@@ -17,23 +17,38 @@ export const QuoteBanner: FC = () => {
 		() => {
 			const q = gsap.utils.selector(sectionRef);
 
-			gsap.set(q(".ab-qb-text"), { opacity: 0, y: 30, scale: 0.96 });
+			// Slow Ken Burns drift on the panorama, plays when in view
+			gsap.fromTo(
+				q(".ab-qb-bg"),
+				{ scale: 1.18, xPercent: -2 },
+				{
+					scale: 1,
+					xPercent: 2,
+					duration: 2,
+					ease: "power2.out",
+					scrollTrigger: {
+						trigger: sectionRef.current,
+						start: "top 70%",
+						once: true
+					}
+				}
+			);
 
-			const tl = gsap.timeline({
-				scrollTrigger: {
-					trigger: sectionRef.current,
-					start: "top 80%",
-					once: true
-				},
-				defaults: { ease: "power3.out" }
-			});
-
-			tl.to(q(".ab-qb-text"), {
-				opacity: 1,
-				y: 0,
-				scale: 1,
-				duration: 1.1
-			});
+			// Quote sweeps in like a carved inscription
+			gsap.set(q(".ab-qb-text"), { clipPath: "inset(0 100% 0 0)" });
+			gsap.to(
+				q(".ab-qb-text"),
+				{
+					clipPath: "inset(0 0% 0 0)",
+					duration: 1.4,
+					ease: "power4.inOut",
+					scrollTrigger: {
+						trigger: sectionRef.current,
+						start: "top 60%",
+						once: true
+					}
+				}
+			);
 		},
 		{ scope: sectionRef, dependencies: [locale] }
 	);
@@ -45,7 +60,7 @@ export const QuoteBanner: FC = () => {
 		>
 			{/* Panoramic Landscape / Masterplan Image */}
 			<div
-				className="absolute inset-0 bg-cover bg-center"
+				className="ab-qb-bg absolute inset-0 bg-cover bg-center"
 				style={{
 					backgroundImage:
 						"url('https://images.unsplash.com/photo-1577495508048-b635879837f1?w=2000&auto=format&fit=crop&q=80')"

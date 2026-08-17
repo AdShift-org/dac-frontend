@@ -5,11 +5,11 @@ import { useIntlayer, useLocale } from "react-intlayer";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Lightbulb, ShieldCheck } from "lucide-react";
+import { Eye, Target } from "lucide-react";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-const pillarIcons = [Lightbulb, ShieldCheck];
+const pillarIcons = [Target, Eye];
 
 export const Pillars: FC = () => {
 	const content = useIntlayer("about-pillars");
@@ -20,23 +20,22 @@ export const Pillars: FC = () => {
 		() => {
 			const q = gsap.utils.selector(sectionRef);
 
-			gsap.set(q(".ab-pl-card"), { opacity: 0, y: 35 });
+			gsap.set(q(".ab-pl-card"), { clipPath: "inset(100% 0 0 0)" });
 
-			const tl = gsap.timeline({
-				scrollTrigger: {
-					trigger: sectionRef.current,
-					start: "top 85%",
-					once: true
-				},
-				defaults: { ease: "power3.out" }
-			});
-
-			tl.to(q(".ab-pl-card"), {
-				opacity: 1,
-				y: 0,
-				duration: 0.8,
-				stagger: 0.18
-			});
+			gsap.to(
+				q(".ab-pl-card"),
+				{
+					clipPath: "inset(0 0 0 0)",
+					duration: 0.9,
+					stagger: 0.18,
+					ease: "power3.inOut",
+					scrollTrigger: {
+						trigger: sectionRef.current,
+						start: "top 85%",
+						once: true
+					}
+				}
+			);
 		},
 		{ scope: sectionRef, dependencies: [locale] }
 	);
@@ -46,7 +45,7 @@ export const Pillars: FC = () => {
 			<div className="mx-auto max-w-7xl px-6 sm:px-12">
 				<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
 					{content.cards.map((card, index) => {
-						const IconComponent = pillarIcons[index] || Lightbulb;
+						const IconComponent = pillarIcons[index] || Target;
 						return (
 							<div
 								key={card.key}

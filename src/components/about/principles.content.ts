@@ -5,7 +5,7 @@ const principlesContent = {
 	content: {
 		label: t({
 			ar: "هويتنا وجوهرنا",
-			en: "OUR DNA"
+			en: "OUR VALUES"
 		}),
 		heading: t({
 			ar: "المبادئ التوجيهية",

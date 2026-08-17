@@ -18,7 +18,7 @@ export const Principles: FC = () => {
 			const q = gsap.utils.selector(sectionRef);
 
 			gsap.set(q(".ab-pr-head"), { opacity: 0, y: 30 });
-			gsap.set(q(".ab-pr-item"), { opacity: 0, y: 25 });
+			gsap.set(q(".ab-pr-item"), { x: (i) => (i % 2 === 0 ? -56 : 56) });
 
 			const tl = gsap.timeline({
 				scrollTrigger: {
@@ -31,7 +31,7 @@ export const Principles: FC = () => {
 
 			tl.to(q(".ab-pr-head"), { opacity: 1, y: 0, duration: 0.9 }).to(
 				q(".ab-pr-item"),
-				{ opacity: 1, y: 0, duration: 0.7, stagger: 0.12 },
+				{ x: 0, duration: 0.8, stagger: 0.14 },
 				"-=0.4"
 			);
 		},
@@ -44,10 +44,10 @@ export const Principles: FC = () => {
 				<div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
 					{/* Left Header */}
 					<div className="ab-pr-head lg:col-span-4">
-						<span className="font-sans text-xs font-semibold tracking-[0.25em] text-accent uppercase">
+						<span className="font-sans text-xs font-semibold tracking-[0.25em] uppercase">
 							— {content.label.value}
 						</span>
-						<h2 className="mt-4 font-serif text-3xl font-extrabold tracking-tight text-neutral-900 uppercase sm:text-4xl lg:text-5xl">
+						<h2 className="mt-4 font-serif text-3xl tracking-tight text-neutral-900 uppercase sm:text-4xl lg:text-5xl">
 							{content.heading.value}
 						</h2>
 					</div>
@@ -57,7 +57,7 @@ export const Principles: FC = () => {
 						{content.items.map((item) => (
 							<div
 								key={item.number}
-								className="ab-pr-item group relative rounded-sm border-l-2 border-accent/40 bg-white p-6 shadow-sm transition-colors duration-300 hover:border-accent hover:shadow-md sm:p-8 rtl:border-r-2 rtl:border-l-0"
+								className="ab-pr-item group relative border-l-2 border-accent/40 p-6 transition-colors duration-300 hover:border-accent sm:p-8 rtl:border-r-2 rtl:border-l-0"
 							>
 								<div className="flex items-center justify-between">
 									<h3 className="font-sans text-base font-bold tracking-widest text-neutral-900 uppercase transition-colors group-hover:text-accent sm:text-lg">
