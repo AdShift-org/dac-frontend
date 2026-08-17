@@ -22,6 +22,9 @@ const navLinks = [
 	{ to: "/contact", key: "contact" }
 ];
 
+// Paths with no dark hero behind the header — always render the scrolled state.
+const noHeroPrefixes = ["/media/"];
+
 export const Header: FC = () => {
 	const content = useIntlayer("header");
 	const { pathname } = useLocation();
@@ -31,6 +34,9 @@ export const Header: FC = () => {
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [scrolled, setScrolled] = useState(false);
 	const [introComplete, setIntroComplete] = useState(!isHomePage);
+
+	const hasNoHero = noHeroPrefixes.some((p) => pathWithoutLocale.startsWith(p));
+	const effectiveScrolled = scrolled || hasNoHero;
 
 	useEffect(() => {
 		const onScroll = () => setScrolled(window.scrollY > 0);
@@ -57,8 +63,10 @@ export const Header: FC = () => {
 	return (
 		<header
 			id="site-header"
-			className={`fixed top-0 right-0 left-0 z-40 py-3 transition-all duration-700 ${
-				scrolled ? "bg-black/80 backdrop-blur-sm" : "bg-transparent backdrop-blur-md"
+			className={`fixed top-0 right-0 left-0 z-40 border-b border-border/20 py-3 transition-all duration-700 ${
+				effectiveScrolled
+					? "bg-black/80 backdrop-blur-sm"
+					: "bg-transparent backdrop-blur-md"
 			} ${
 				introComplete
 					? "pointer-events-auto translate-y-0 opacity-100"
@@ -78,7 +86,7 @@ export const Header: FC = () => {
 						<LocalizedLink
 							key={link.to}
 							to={link.to as To}
-							activeOptions={{ exact: true }}
+							activeOptions={{ exact: link.to === "/" ? true : false }}
 							className="group relative text-xs font-medium tracking-widest text-white/80 transition-colors after:absolute after:-bottom-2 after:left-0 after:h-0.5 after:w-full after:origin-center after:scale-x-0 after:rounded-full after:bg-gradient-to-r after:from-transparent after:via-white after:to-transparent after:transition-transform after:duration-300 after:content-[''] hover:text-white [&.active]:text-white [&.active]:after:origin-center [&.active]:after:scale-x-100"
 						>
 							{content[link.key as keyof typeof content].value}
@@ -107,12 +115,13 @@ export const Header: FC = () => {
 						: "max-h-0 -translate-y-2 opacity-0"
 				}`}
 			>
-				<nav className="border-t border-white/10 bg-black/95 px-6 py-4">
+				<nav className="px-6 py-4">
 					{navLinks.map((link) => (
 						<LocalizedLink
 							key={link.to}
 							to={link.to as To}
-							className="group relative block py-2 ps-3 text-sm tracking-widest text-white/80 transition-colors before:absolute before:top-1/2 before:left-0 before:h-4 before:w-0.5 before:-translate-y-1/2 before:rounded-full before:bg-white before:opacity-0 before:transition-opacity before:content-[''] hover:text-white [&.active]:text-white [&.active]:before:opacity-100"
+							activeOptions={{ exact: link.to === "/" ? true : false }}
+							className="group relative block py-2 ps-3 text-sm tracking-widest text-white/80 transition-none not-hover:transition-colors before:absolute before:top-1/2 before:left-0 before:h-4 before:w-0.5 before:-translate-y-1/2 before:rounded-full before:bg-white before:opacity-0 before:transition-opacity before:content-[''] hover:bg-white/20 hover:text-white focus-visible:bg-white/20 [&.active]:text-white [&.active]:before:opacity-100"
 							onClick={() => setMobileOpen(false)}
 						>
 							{content[link.key as keyof typeof content].value}
