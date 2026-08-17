@@ -18,8 +18,12 @@ import { Route as Char123LocaleChar125ContactRouteImport } from './routes/{-$loc
 import { Route as Char123LocaleChar125MediaRouteImport } from './routes/{-$locale}/media'
 import { Route as Char123LocaleChar125ProjectsRouteImport } from './routes/{-$locale}/projects'
 import { Route as Char123LocaleChar125ServicesRouteImport } from './routes/{-$locale}/services'
+import { Route as Char123LocaleChar125MediaIndexRouteImport } from './routes/{-$locale}/media.index'
+import { Route as Char123LocaleChar125MediaArticleIdRouteImport } from './routes/{-$locale}/media.$articleId'
 import { Route as Char123LocaleChar125ProjectsIndexRouteImport } from './routes/{-$locale}/projects.index'
 import { Route as Char123LocaleChar125ProjectsProjectIdRouteImport } from './routes/{-$locale}/projects.$projectId'
+import { Route as Char123LocaleChar125ProjectsProjectIdIndexRouteImport } from './routes/{-$locale}/projects.$projectId.index'
+import { Route as Char123LocaleChar125ProjectsProjectIdProgressRouteImport } from './routes/{-$locale}/projects.$projectId.progress'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -73,6 +77,18 @@ const Char123LocaleChar125ServicesRoute =
     path: '/services',
     getParentRoute: () => Char123LocaleChar125RouteRoute,
   } as any)
+const Char123LocaleChar125MediaIndexRoute =
+  Char123LocaleChar125MediaIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => Char123LocaleChar125MediaRoute,
+  } as any)
+const Char123LocaleChar125MediaArticleIdRoute =
+  Char123LocaleChar125MediaArticleIdRouteImport.update({
+    id: '/$articleId',
+    path: '/$articleId',
+    getParentRoute: () => Char123LocaleChar125MediaRoute,
+  } as any)
 const Char123LocaleChar125ProjectsIndexRoute =
   Char123LocaleChar125ProjectsIndexRouteImport.update({
     id: '/',
@@ -85,6 +101,18 @@ const Char123LocaleChar125ProjectsProjectIdRoute =
     path: '/$projectId',
     getParentRoute: () => Char123LocaleChar125ProjectsRoute,
   } as any)
+const Char123LocaleChar125ProjectsProjectIdIndexRoute =
+  Char123LocaleChar125ProjectsProjectIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => Char123LocaleChar125ProjectsProjectIdRoute,
+  } as any)
+const Char123LocaleChar125ProjectsProjectIdProgressRoute =
+  Char123LocaleChar125ProjectsProjectIdProgressRouteImport.update({
+    id: '/progress',
+    path: '/progress',
+    getParentRoute: () => Char123LocaleChar125ProjectsProjectIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -92,23 +120,29 @@ export interface FileRoutesByFullPath {
   '/og-image': typeof OgImageRoute
   '/{-$locale}/about': typeof Char123LocaleChar125AboutRoute
   '/{-$locale}/contact': typeof Char123LocaleChar125ContactRoute
-  '/{-$locale}/media': typeof Char123LocaleChar125MediaRoute
+  '/{-$locale}/media': typeof Char123LocaleChar125MediaRouteWithChildren
   '/{-$locale}/projects': typeof Char123LocaleChar125ProjectsRouteWithChildren
   '/{-$locale}/services': typeof Char123LocaleChar125ServicesRoute
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
-  '/{-$locale}/projects/$projectId': typeof Char123LocaleChar125ProjectsProjectIdRoute
+  '/{-$locale}/media/$articleId': typeof Char123LocaleChar125MediaArticleIdRoute
+  '/{-$locale}/projects/$projectId': typeof Char123LocaleChar125ProjectsProjectIdRouteWithChildren
+  '/{-$locale}/media/': typeof Char123LocaleChar125MediaIndexRoute
   '/{-$locale}/projects/': typeof Char123LocaleChar125ProjectsIndexRoute
+  '/{-$locale}/projects/$projectId/progress': typeof Char123LocaleChar125ProjectsProjectIdProgressRoute
+  '/{-$locale}/projects/$projectId/': typeof Char123LocaleChar125ProjectsProjectIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/og-image': typeof OgImageRoute
   '/{-$locale}/about': typeof Char123LocaleChar125AboutRoute
   '/{-$locale}/contact': typeof Char123LocaleChar125ContactRoute
-  '/{-$locale}/media': typeof Char123LocaleChar125MediaRoute
   '/{-$locale}/services': typeof Char123LocaleChar125ServicesRoute
   '/{-$locale}': typeof Char123LocaleChar125IndexRoute
-  '/{-$locale}/projects/$projectId': typeof Char123LocaleChar125ProjectsProjectIdRoute
+  '/{-$locale}/media/$articleId': typeof Char123LocaleChar125MediaArticleIdRoute
+  '/{-$locale}/media': typeof Char123LocaleChar125MediaIndexRoute
   '/{-$locale}/projects': typeof Char123LocaleChar125ProjectsIndexRoute
+  '/{-$locale}/projects/$projectId/progress': typeof Char123LocaleChar125ProjectsProjectIdProgressRoute
+  '/{-$locale}/projects/$projectId': typeof Char123LocaleChar125ProjectsProjectIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -117,12 +151,16 @@ export interface FileRoutesById {
   '/og-image': typeof OgImageRoute
   '/{-$locale}/about': typeof Char123LocaleChar125AboutRoute
   '/{-$locale}/contact': typeof Char123LocaleChar125ContactRoute
-  '/{-$locale}/media': typeof Char123LocaleChar125MediaRoute
+  '/{-$locale}/media': typeof Char123LocaleChar125MediaRouteWithChildren
   '/{-$locale}/projects': typeof Char123LocaleChar125ProjectsRouteWithChildren
   '/{-$locale}/services': typeof Char123LocaleChar125ServicesRoute
   '/{-$locale}/': typeof Char123LocaleChar125IndexRoute
-  '/{-$locale}/projects/$projectId': typeof Char123LocaleChar125ProjectsProjectIdRoute
+  '/{-$locale}/media/$articleId': typeof Char123LocaleChar125MediaArticleIdRoute
+  '/{-$locale}/projects/$projectId': typeof Char123LocaleChar125ProjectsProjectIdRouteWithChildren
+  '/{-$locale}/media/': typeof Char123LocaleChar125MediaIndexRoute
   '/{-$locale}/projects/': typeof Char123LocaleChar125ProjectsIndexRoute
+  '/{-$locale}/projects/$projectId/progress': typeof Char123LocaleChar125ProjectsProjectIdProgressRoute
+  '/{-$locale}/projects/$projectId/': typeof Char123LocaleChar125ProjectsProjectIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -136,19 +174,25 @@ export interface FileRouteTypes {
     | '/{-$locale}/projects'
     | '/{-$locale}/services'
     | '/{-$locale}/'
+    | '/{-$locale}/media/$articleId'
     | '/{-$locale}/projects/$projectId'
+    | '/{-$locale}/media/'
     | '/{-$locale}/projects/'
+    | '/{-$locale}/projects/$projectId/progress'
+    | '/{-$locale}/projects/$projectId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/og-image'
     | '/{-$locale}/about'
     | '/{-$locale}/contact'
-    | '/{-$locale}/media'
     | '/{-$locale}/services'
     | '/{-$locale}'
-    | '/{-$locale}/projects/$projectId'
+    | '/{-$locale}/media/$articleId'
+    | '/{-$locale}/media'
     | '/{-$locale}/projects'
+    | '/{-$locale}/projects/$projectId/progress'
+    | '/{-$locale}/projects/$projectId'
   id:
     | '__root__'
     | '/'
@@ -160,8 +204,12 @@ export interface FileRouteTypes {
     | '/{-$locale}/projects'
     | '/{-$locale}/services'
     | '/{-$locale}/'
+    | '/{-$locale}/media/$articleId'
     | '/{-$locale}/projects/$projectId'
+    | '/{-$locale}/media/'
     | '/{-$locale}/projects/'
+    | '/{-$locale}/projects/$projectId/progress'
+    | '/{-$locale}/projects/$projectId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -235,6 +283,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125ServicesRouteImport
       parentRoute: typeof Char123LocaleChar125RouteRoute
     }
+    '/{-$locale}/media/': {
+      id: '/{-$locale}/media/'
+      path: '/'
+      fullPath: '/{-$locale}/media/'
+      preLoaderRoute: typeof Char123LocaleChar125MediaIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125MediaRoute
+    }
+    '/{-$locale}/media/$articleId': {
+      id: '/{-$locale}/media/$articleId'
+      path: '/$articleId'
+      fullPath: '/{-$locale}/media/$articleId'
+      preLoaderRoute: typeof Char123LocaleChar125MediaArticleIdRouteImport
+      parentRoute: typeof Char123LocaleChar125MediaRoute
+    }
     '/{-$locale}/projects/': {
       id: '/{-$locale}/projects/'
       path: '/'
@@ -249,18 +311,67 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char123LocaleChar125ProjectsProjectIdRouteImport
       parentRoute: typeof Char123LocaleChar125ProjectsRoute
     }
+    '/{-$locale}/projects/$projectId/': {
+      id: '/{-$locale}/projects/$projectId/'
+      path: '/'
+      fullPath: '/{-$locale}/projects/$projectId/'
+      preLoaderRoute: typeof Char123LocaleChar125ProjectsProjectIdIndexRouteImport
+      parentRoute: typeof Char123LocaleChar125ProjectsProjectIdRoute
+    }
+    '/{-$locale}/projects/$projectId/progress': {
+      id: '/{-$locale}/projects/$projectId/progress'
+      path: '/progress'
+      fullPath: '/{-$locale}/projects/$projectId/progress'
+      preLoaderRoute: typeof Char123LocaleChar125ProjectsProjectIdProgressRouteImport
+      parentRoute: typeof Char123LocaleChar125ProjectsProjectIdRoute
+    }
   }
 }
 
+interface Char123LocaleChar125MediaRouteChildren {
+  Char123LocaleChar125MediaArticleIdRoute: typeof Char123LocaleChar125MediaArticleIdRoute
+  Char123LocaleChar125MediaIndexRoute: typeof Char123LocaleChar125MediaIndexRoute
+}
+
+const Char123LocaleChar125MediaRouteChildren: Char123LocaleChar125MediaRouteChildren =
+  {
+    Char123LocaleChar125MediaArticleIdRoute:
+      Char123LocaleChar125MediaArticleIdRoute,
+    Char123LocaleChar125MediaIndexRoute: Char123LocaleChar125MediaIndexRoute,
+  }
+
+const Char123LocaleChar125MediaRouteWithChildren =
+  Char123LocaleChar125MediaRoute._addFileChildren(
+    Char123LocaleChar125MediaRouteChildren,
+  )
+
+interface Char123LocaleChar125ProjectsProjectIdRouteChildren {
+  Char123LocaleChar125ProjectsProjectIdProgressRoute: typeof Char123LocaleChar125ProjectsProjectIdProgressRoute
+  Char123LocaleChar125ProjectsProjectIdIndexRoute: typeof Char123LocaleChar125ProjectsProjectIdIndexRoute
+}
+
+const Char123LocaleChar125ProjectsProjectIdRouteChildren: Char123LocaleChar125ProjectsProjectIdRouteChildren =
+  {
+    Char123LocaleChar125ProjectsProjectIdProgressRoute:
+      Char123LocaleChar125ProjectsProjectIdProgressRoute,
+    Char123LocaleChar125ProjectsProjectIdIndexRoute:
+      Char123LocaleChar125ProjectsProjectIdIndexRoute,
+  }
+
+const Char123LocaleChar125ProjectsProjectIdRouteWithChildren =
+  Char123LocaleChar125ProjectsProjectIdRoute._addFileChildren(
+    Char123LocaleChar125ProjectsProjectIdRouteChildren,
+  )
+
 interface Char123LocaleChar125ProjectsRouteChildren {
-  Char123LocaleChar125ProjectsProjectIdRoute: typeof Char123LocaleChar125ProjectsProjectIdRoute
+  Char123LocaleChar125ProjectsProjectIdRoute: typeof Char123LocaleChar125ProjectsProjectIdRouteWithChildren
   Char123LocaleChar125ProjectsIndexRoute: typeof Char123LocaleChar125ProjectsIndexRoute
 }
 
 const Char123LocaleChar125ProjectsRouteChildren: Char123LocaleChar125ProjectsRouteChildren =
   {
     Char123LocaleChar125ProjectsProjectIdRoute:
-      Char123LocaleChar125ProjectsProjectIdRoute,
+      Char123LocaleChar125ProjectsProjectIdRouteWithChildren,
     Char123LocaleChar125ProjectsIndexRoute:
       Char123LocaleChar125ProjectsIndexRoute,
   }
@@ -273,7 +384,7 @@ const Char123LocaleChar125ProjectsRouteWithChildren =
 interface Char123LocaleChar125RouteRouteChildren {
   Char123LocaleChar125AboutRoute: typeof Char123LocaleChar125AboutRoute
   Char123LocaleChar125ContactRoute: typeof Char123LocaleChar125ContactRoute
-  Char123LocaleChar125MediaRoute: typeof Char123LocaleChar125MediaRoute
+  Char123LocaleChar125MediaRoute: typeof Char123LocaleChar125MediaRouteWithChildren
   Char123LocaleChar125ProjectsRoute: typeof Char123LocaleChar125ProjectsRouteWithChildren
   Char123LocaleChar125ServicesRoute: typeof Char123LocaleChar125ServicesRoute
   Char123LocaleChar125IndexRoute: typeof Char123LocaleChar125IndexRoute
@@ -283,7 +394,7 @@ const Char123LocaleChar125RouteRouteChildren: Char123LocaleChar125RouteRouteChil
   {
     Char123LocaleChar125AboutRoute: Char123LocaleChar125AboutRoute,
     Char123LocaleChar125ContactRoute: Char123LocaleChar125ContactRoute,
-    Char123LocaleChar125MediaRoute: Char123LocaleChar125MediaRoute,
+    Char123LocaleChar125MediaRoute: Char123LocaleChar125MediaRouteWithChildren,
     Char123LocaleChar125ProjectsRoute:
       Char123LocaleChar125ProjectsRouteWithChildren,
     Char123LocaleChar125ServicesRoute: Char123LocaleChar125ServicesRoute,
