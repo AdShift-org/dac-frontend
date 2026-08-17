@@ -14,9 +14,15 @@ const config = defineConfig({
 		nitro({ rollupConfig: { external: [/^@sentry\//] } }),
 		tailwindcss(),
 		tanstackStart(),
-        viteReact(),
+		viteReact(),
 		intlayer()
-	]
+	],
+	server: {
+		allowedHosts: [
+			"ca20-197-46-135-104.ngrok-free.app",
+			".ngrok-free.app"
+		]
+	}
 });
 
 export default config;
