@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "@tanstack/react-router";
 import { getLocaleName, getPathWithoutLocale, getPrefix } from "intlayer";
 import { useLocale } from "react-intlayer";
 
+import { LOCALE_ROUTE } from "./localized-link";
 import { Button } from "./ui/button";
 
 export const LocaleSwitcher: FC = () => {
@@ -24,7 +25,7 @@ export const LocaleSwitcher: FC = () => {
 			onClick={() => {
 				setLocale(nextLocale);
 				void navigate({
-					to: pathWithoutLocale,
+					to: `/${LOCALE_ROUTE}${pathWithoutLocale}`,
 					params: { locale: getPrefix(nextLocale).localePrefix }
 				});
 			}}
