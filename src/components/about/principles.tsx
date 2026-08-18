@@ -6,12 +6,30 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export const Principles: FC = () => {
 	const content = useIntlayer("about-principles");
 	const { locale } = useLocale();
+	const { about } = useCmsData();
+	const s = pickSection(about, "features", locale as Locale);
 	const sectionRef = useRef<HTMLElement>(null);
+
+	const points = s?.points as Record<string, { title?: string; description?: string }> | undefined;
+	const apiPoints = points ? Object.values(points) : [];
+	const items = apiPoints.length
+		? apiPoints.map((p, i) => ({
+				number: `0${i + 1}`,
+				title: (p.title ?? content.items[i]?.title.value) as string,
+				description: (p.description ?? content.items[i]?.description.value) as string
+			}))
+		: content.items.map((it) => ({
+				number: it.number,
+				title: it.title.value,
+				description: it.description.value
+			}));
 
 	useGSAP(
 		() => {
@@ -48,27 +66,27 @@ export const Principles: FC = () => {
 							— {content.label.value}
 						</span>
 						<h2 className="mt-4 font-serif text-3xl tracking-tight text-neutral-900 uppercase sm:text-4xl lg:text-5xl">
-							{content.heading.value}
+							{(s?.header_title as string) || content.heading.value}
 						</h2>
 					</div>
 
 					{/* Right 4-Grid */}
 					<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-8 lg:gap-10">
-						{content.items.map((item) => (
+						{items.map((item) => (
 							<div
 								key={item.number}
 								className="ab-pr-item group relative border-l-2 border-accent/40 p-6 transition-colors duration-300 hover:border-accent sm:p-8 rtl:border-r-2 rtl:border-l-0"
 							>
 								<div className="flex items-center justify-between">
 									<h3 className="font-sans text-base font-bold tracking-widest text-neutral-900 uppercase transition-colors group-hover:text-accent sm:text-lg">
-										{item.title.value}
+										{item.title}
 									</h3>
 									<span className="font-serif text-xs font-bold text-accent/60">
 										{item.number}
 									</span>
 								</div>
 								<p className="mt-3 text-xs leading-relaxed font-light text-neutral-600 sm:text-sm">
-									{item.description.value}
+									{item.description}
 								</p>
 							</div>
 						))}

@@ -6,12 +6,36 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export const Timeline: FC = () => {
 	const content = useIntlayer("about-timeline");
 	const { locale } = useLocale();
+	const { about } = useCmsData();
+	const s = pickSection(about, "story", locale as Locale);
 	const sectionRef = useRef<HTMLElement>(null);
+
+	const rawPoints = s?.story_points as
+		| Array<{ en?: { year?: string; title?: string; description?: string; image?: string | null }; ar?: { year?: string; title?: string; description?: string; image?: string | null } }>
+		| undefined;
+	const storyPoints = rawPoints?.length
+		? rawPoints.map((p) => p[locale as Locale] ?? {})
+		: [];
+	const milestones = storyPoints.length
+		? storyPoints.map((p, i) => ({
+				year: p.year ?? content.milestones[i]?.year ?? "",
+				title: (p.title ?? content.milestones[i]?.title.value) as string,
+				description: (p.description ?? content.milestones[i]?.description.value) as string,
+				image: (p.image ?? content.milestones[i]?.image) as string
+			}))
+		: content.milestones.map((m) => ({
+				year: m.year,
+				title: m.title.value,
+				description: m.description.value,
+				image: m.image
+			}));
 
 	useGSAP(
 		() => {
@@ -74,7 +98,7 @@ export const Timeline: FC = () => {
 						— {content.label.value}
 					</span>*/}
 					<h2 className="mt-3 font-serif text-3xl font-normal tracking-tight text-white uppercase sm:text-4xl lg:text-5xl">
-						{content.heading.value}
+						{(s?.header_title as string) || content.heading.value}
 					</h2>
 					{/*<p className="mx-auto mt-4 max-w-2xl text-xs leading-relaxed font-light text-white/60 sm:text-sm">
 						{content.subtitle.value}
@@ -107,13 +131,13 @@ export const Timeline: FC = () => {
 										{isEven ? (
 											<div>
 												<span className="font-serif text-5xl font-light text-white/30 sm:text-6xl lg:text-7xl">
-													{item.year}
+													{milestones[index]?.year ?? item.year}
 												</span>
 												<h3 className="mt-2 font-serif text-base font-normal tracking-widest uppercase sm:text-lg">
-													{item.title.value}
+													{milestones[index]?.title ?? item.title.value}
 												</h3>
 												<p className="mt-3 text-xs leading-relaxed font-light text-white/70 sm:text-sm">
-													{item.description.value}
+													{milestones[index]?.description ?? item.description.value}
 												</p>
 											</div>
 										) : (
@@ -121,7 +145,7 @@ export const Timeline: FC = () => {
 												<div
 													className="absolute inset-0 bg-cover bg-center contrast-110 grayscale transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0"
 													style={{
-														backgroundImage: `url('${item.image}')`
+														backgroundImage: `url('${milestones[index]?.image ?? item.image}')`
 													}}
 												/>
 												<div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
@@ -149,7 +173,7 @@ export const Timeline: FC = () => {
 												<div
 													className="absolute inset-0 bg-cover bg-center contrast-110 grayscale transition-transform duration-700 group-hover:scale-105 group-hover:grayscale-0"
 													style={{
-														backgroundImage: `url('${item.image}')`
+														backgroundImage: `url('${milestones[index]?.image ?? item.image}')`
 													}}
 												/>
 												<div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
@@ -157,13 +181,13 @@ export const Timeline: FC = () => {
 										) : (
 											<div>
 												<span className="font-serif text-5xl font-light text-white/30 sm:text-6xl lg:text-7xl">
-													{item.year}
+													{milestones[index]?.year ?? item.year}
 												</span>
 												<h3 className="mt-2 font-serif text-base font-normal tracking-widest text-white uppercase sm:text-lg">
-													{item.title.value}
+													{milestones[index]?.title ?? item.title.value}
 												</h3>
 												<p className="mt-3 text-xs leading-relaxed font-light text-white/70 sm:text-sm">
-													{item.description.value}
+													{milestones[index]?.description ?? item.description.value}
 												</p>
 											</div>
 										)}

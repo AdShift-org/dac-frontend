@@ -7,6 +7,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Eye, Target } from "lucide-react";
 
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const pillarIcons = [Target, Eye];
@@ -14,7 +16,23 @@ const pillarIcons = [Target, Eye];
 export const Pillars: FC = () => {
 	const content = useIntlayer("about-pillars");
 	const { locale } = useLocale();
+	const { about } = useCmsData();
+	const s = pickSection(about, "vision_mission", locale as Locale);
 	const sectionRef = useRef<HTMLElement>(null);
+
+	const points = s?.points as Record<string, { title?: string; description?: string }> | undefined;
+	const apiCards = points ? Object.values(points) : [];
+	const cards = apiCards.length
+		? apiCards.map((p, i) => ({
+				key: content.cards[i]?.key ?? String(i),
+				title: (p.title ?? content.cards[i]?.title.value) as string,
+				description: (p.description ?? content.cards[i]?.description.value) as string
+			}))
+		: content.cards.map((c) => ({
+				key: c.key,
+				title: c.title.value,
+				description: c.description.value
+			}));
 
 	useGSAP(
 		() => {
@@ -44,7 +62,7 @@ export const Pillars: FC = () => {
 		<section ref={sectionRef} className="bg-[#0e0d0b] py-20 text-white sm:py-24">
 			<div className="mx-auto max-w-7xl px-6 sm:px-12">
 				<div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-					{content.cards.map((card, index) => {
+					{cards.map((card, index) => {
 						const IconComponent = pillarIcons[index] || Target;
 						return (
 							<div
@@ -55,10 +73,10 @@ export const Pillars: FC = () => {
 									<IconComponent className="size-7" />
 								</div>
 								<h3 className="font-serif text-2xl font-bold tracking-wider text-white uppercase transition-colors group-hover:text-accent sm:text-3xl">
-									{card.title.value}
+									{card.title}
 								</h3>
 								<p className="mt-4 text-xs leading-relaxed font-light text-white/70 sm:text-sm sm:leading-relaxed">
-									{card.description.value}
+									{card.description}
 								</p>
 								<div className="mt-8 h-0.5 w-12 bg-accent/40 transition-all duration-300 group-hover:w-20 group-hover:bg-accent" />
 							</div>
