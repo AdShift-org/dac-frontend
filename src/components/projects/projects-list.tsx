@@ -6,7 +6,7 @@ import { useIntlayer, useLocale } from "react-intlayer";
 import { useCmsData } from "@/lib/cms";
 
 // import { ArrowRight, ChevronDown, RotateCcw, Sparkles } from "lucide-react";
-import { ChevronDown, RotateCcw, Sparkles } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, RotateCcw, Sparkles } from "lucide-react";
 
 import dacLogo from "#/assets/dac-logo.png";
 
@@ -22,7 +22,37 @@ export const ProjectsList: FC = () => {
 	// All items
 	const items = useMemo(() => {
 		const api = projects ?? [];
-		if (!api.length) return content.items;
+		if (!api.length) {
+			return content.items.map((c) => ({
+				id: { value: c.id },
+				statusKey: { value: c.statusKey },
+				typologyKey: { value: c.typologyKey },
+				sectorKey: { value: c.sectorKey },
+				badge: { value: c.badge.value },
+				title: { value: c.title.value },
+				description: { value: c.description.value },
+				year: { value: c.year },
+				location: { value: c.location.value },
+				sector: { value: c.sector.value },
+				status: { value: c.status.value },
+				area: { value: c.area },
+				units: { value: "" },
+				builtUp: { value: "" },
+				delivery: { value: c.year },
+				owner: { value: "" },
+				consultant: { value: "" },
+				contractor: { value: "" },
+				startingPrice: { value: "" },
+				contractValue: { value: "" },
+				image: { value: c.image },
+				createdAt: ""
+			}));
+		}
+
+		const statusLabels = content.statuses as unknown as Record<string, { value: string }>;
+		const statusLabel = (s: string): string => statusLabels[s]?.value ?? s.replace(/_/g, " ");
+		const num = (n: number | null | undefined): string =>
+			n == null ? "" : n.toLocaleString(locale === "ar" ? "ar-EG" : "en-US");
 
 		return api
 			.map((raw) => {
@@ -33,9 +63,17 @@ export const ProjectsList: FC = () => {
 					name?: string;
 					description?: string | null;
 					location?: string | null;
-					area?: string | null;
-					delivery_year?: number | null;
-					images?: string[];
+				area?: string | null;
+				total_units?: number | null;
+				built_up_area?: number | null;
+				delivery_quarter?: number | null;
+				delivery_year?: number | null;
+				starting_price?: number | null;
+				contract_value?: number | null;
+				owner?: string | null;
+				consultant?: string | null;
+				contractor?: string | null;
+				images?: string[];
 					created_at?: string | null;
 					service?: { en: { name: string }; ar: { name: string } } | null;
 				};
@@ -46,7 +84,7 @@ export const ProjectsList: FC = () => {
 					statusKey: { value: p.status },
 					typologyKey: { value: "" },
 					sectorKey: { value: service ? service.name : "" },
-					badge: { value: "PROJECT" },
+					badge: { value: statusLabel(p.status) },
 					title: { value: (p.title || p.name) ?? "" },
 					description: { value: p.description ?? "" },
 					year: { value: p.delivery_year ? String(p.delivery_year) : "" },
@@ -54,6 +92,20 @@ export const ProjectsList: FC = () => {
 					sector: { value: service ? service.name : "" },
 					status: { value: p.status },
 					area: { value: p.area ?? "" },
+					units: { value: num(p.total_units) },
+					builtUp: { value: num(p.built_up_area) },
+					delivery: {
+						value: p.delivery_quarter && p.delivery_year
+							? `Q${p.delivery_quarter} ${p.delivery_year}`
+							: p.delivery_year
+								? String(p.delivery_year)
+								: ""
+					},
+					owner: { value: p.owner ?? "" },
+					consultant: { value: p.consultant ?? "" },
+					contractor: { value: p.contractor ?? "" },
+					startingPrice: { value: num(p.starting_price) },
+					contractValue: { value: num(p.contract_value) },
 					image: { value: p.images?.[0] || dacLogo },
 					createdAt: p.created_at ?? ""
 				};
@@ -109,11 +161,31 @@ export const ProjectsList: FC = () => {
 		});
 	}, [items, statusFilter, sectorFilter]);
 
+	// Pagination
+	const PAGE_SIZE = 6;
+	const [page, setPage] = useState(1);
+
+	const totalPages = Math.max(1, Math.ceil(filteredItems.length / PAGE_SIZE));
+	const activePage = Math.min(page, totalPages);
+	const pageItems = useMemo(
+		() => filteredItems.slice((activePage - 1) * PAGE_SIZE, activePage * PAGE_SIZE),
+		[filteredItems, activePage]
+	);
+
 	const isFiltered = statusFilter !== "all" || sectorFilter !== "all";
 
+	const changeStatus = (v: string) => {
+		setStatusFilter(v);
+		setPage(1);
+	};
+	const changeSector = (v: string) => {
+		setSectorFilter(v);
+		setPage(1);
+	};
 	const clearAllFilters = () => {
 		setStatusFilter("all");
 		setSectorFilter("all");
+		setPage(1);
 	};
 
 	return (
@@ -150,7 +222,7 @@ export const ProjectsList: FC = () => {
 							<div className="relative inline-block">
 								<select
 									value={statusFilter}
-									onChange={(e) => setStatusFilter(e.target.value)}
+									onChange={(e) => changeStatus(e.target.value)}
 									className="cursor-pointer appearance-none rounded-none border-b border-neutral-400 bg-transparent pr-6 pl-1 font-sans text-xs font-medium text-neutral-900 transition-colors focus:border-neutral-900 focus:outline-none"
 								>
 									{statusOptions.map((opt) => (
@@ -171,7 +243,7 @@ export const ProjectsList: FC = () => {
 							<div className="relative inline-block">
 								<select
 									value={sectorFilter}
-									onChange={(e) => setSectorFilter(e.target.value)}
+									onChange={(e) => changeSector(e.target.value)}
 									className="cursor-pointer appearance-none rounded-none border-b border-neutral-400 bg-transparent pr-6 pl-1 font-sans text-xs font-medium text-neutral-900 transition-colors focus:border-neutral-900 focus:outline-none"
 								>
 									{sectorOptions.map((opt) => (
@@ -283,37 +355,13 @@ export const ProjectsList: FC = () => {
 
 				{/* 2-Column Grid */}
 				{filteredItems.length > 0 ? (
+					<>
 					<div className="mt-14 grid grid-cols-1 gap-x-10 gap-y-16 lg:grid-cols-2">
-						{filteredItems.map((project) => (
-							<article key={project.id.value} className="group flex flex-col">
-								{/* Card Image */}
-								{/* DISABLED: project detail page is hidden. */}
-								{/*
-								<Link
-									to={`/projects/${project.id.value}` as never}
-									className="relative aspect-16/10 w-full overflow-hidden rounded-xs bg-neutral-900"
-								>
-									<div className="flex size-full items-center justify-center">
-										<img
-											src={project.image.value}
-											alt={project.title.value}
-											className={
-												project.image.value === dacLogo
-													? "mx-auto size-1/2 object-contain opacity-40"
-													: "size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-											}
-										/>
-									</div>
-									Badge
-									<div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full bg-black/75 px-3 py-1 text-[10px] font-semibold tracking-widest text-white uppercase backdrop-blur-xs">
-										{project.badge.value.toLowerCase().includes("featured") && (
-											<span className="size-1.5 rounded-full bg-amber-400" />
-										)}
-										<span>{project.badge.value}</span>
-									</div>
-								</Link>
-								*/}
-								<div className="flex size-full items-center justify-center bg-black/20">
+{pageItems.map((project) => (
+						<article key={project.id.value} className="group flex flex-col">
+							{/* Card Image */}
+							<div className="relative aspect-16/10 w-full overflow-hidden bg-neutral-900">
+								<div className="flex size-full items-center justify-center">
 									<img
 										src={project.image.value}
 										alt={project.title.value}
@@ -324,81 +372,160 @@ export const ProjectsList: FC = () => {
 										}
 									/>
 								</div>
+								{/* Status badge */}
 								<div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full bg-black/75 px-3 py-1 text-[10px] font-semibold tracking-widest text-white uppercase backdrop-blur-xs">
-									{project.badge.value.toLowerCase().includes("featured") && (
-										<span className="size-1.5 rounded-full bg-amber-400" />
-									)}
+									<span className="size-1.5 rounded-full bg-emerald-400" />
 									<span>{project.badge.value}</span>
 								</div>
-								{/* Card Info */}
-								<div className="mt-5 flex flex-1 flex-col">
-									{/* Title & Year */}
-									<div className="flex items-baseline justify-between gap-4">
-										{/* DISABLED: project detail page is hidden. */}
-										{/*
-										<Link
-											to={`/projects/${project.id.value}` as never}
-											className="transition-colors hover:text-neutral-600"
+							</div>
+
+							{/* Title & Year */}
+							<div className="mt-6 flex items-baseline justify-between gap-4">
+								<h3 className="font-serif text-2xl font-normal text-neutral-900 sm:text-3xl">
+									{project.title.value}
+								</h3>
+								<span className="shrink-0 font-serif text-3xl font-light text-neutral-400 sm:text-4xl">
+									{project.year.value}
+								</span>
+							</div>
+
+							{/* Sector / Location microline */}
+							<div className="mt-2 flex items-center gap-2 font-sans text-[11px] font-semibold tracking-[0.18em] text-neutral-500 uppercase">
+								{project.sector.value && <span>{project.sector.value}</span>}
+								{project.sector.value && project.location.value && (
+									<span aria-hidden className="text-neutral-300">
+										/
+									</span>
+								)}
+								{project.location.value && (
+									<span className="truncate">{project.location.value}</span>
+								)}
+							</div>
+
+							{/* Description */}
+							<p className="mt-4 font-sans text-xs leading-relaxed font-light text-neutral-600 sm:text-sm">
+								{project.description.value}
+							</p>
+
+							{/* Prominent data panel */}
+							<div className="mt-6 border border-neutral-300/80 bg-[#efeae0] p-5 sm:p-6">
+								<span className="block font-sans text-[10px] font-semibold tracking-[0.25em] text-neutral-500 uppercase">
+									{content.projectData.value}
+								</span>
+
+								{/* Spec */}
+								<div className="mt-4 grid grid-cols-4 divide-x divide-neutral-300/70 rtl:divide-x-reverse">
+									{[
+										{ label: content.metaLabels.units.value, value: project.units.value },
+										{ label: content.metaLabels.builtUp.value, value: project.builtUp.value },
+										{ label: content.metaLabels.area.value, value: project.area.value },
+										{ label: content.metaLabels.delivery.value, value: project.delivery.value }
+									].map((cell) => (
+										<div
+											key={cell.label}
+											className="px-2 py-1 first:pl-0 last:pr-0"
 										>
-											<h3 className="font-serif text-2xl font-normal text-neutral-900 sm:text-3xl">
-												{project.title.value}
-											</h3>
-										</Link>
-										*/}
-										<h3 className="font-serif text-2xl font-normal text-neutral-900 sm:text-3xl">
-											{project.title.value}
-										</h3>
-										<span className="font-serif text-3xl font-light text-neutral-400 sm:text-4xl">
-											{project.year.value}
-										</span>
-									</div>
-
-									{/* Description */}
-									<p className="mt-2 font-sans text-xs leading-relaxed font-light text-neutral-600 sm:text-sm">
-										{project.description.value}
-									</p>
-
-									{/* Divider & Metadata columns */}
-									<div className="mt-6 border-t border-neutral-300/80 pt-4">
-										<div className="grid grid-cols-4 gap-2 text-start">
-											<div>
-												<span className="block font-sans text-[10px] font-semibold tracking-wider text-neutral-400 uppercase">
-													{content.metaLabels.location.value}
-												</span>
-												<span className="mt-0.5 block truncate font-sans text-xs font-medium text-neutral-800">
-													{project.location.value}
-												</span>
-											</div>
-											<div>
-												<span className="block font-sans text-[10px] font-semibold tracking-wider text-neutral-400 uppercase">
-													{content.metaLabels.sector.value}
-												</span>
-												<span className="mt-0.5 block truncate font-sans text-xs font-medium text-neutral-800">
-													{project.sector.value}
-												</span>
-											</div>
-											<div>
-												<span className="block font-sans text-[10px] font-semibold tracking-wider text-neutral-400 uppercase">
-													{content.metaLabels.status.value}
-												</span>
-												<span className="mt-0.5 block truncate font-sans text-xs font-medium text-neutral-800">
-													{project.status.value}
-												</span>
-											</div>
-											<div>
-												<span className="block font-sans text-[10px] font-semibold tracking-wider text-neutral-400 uppercase">
-													{content.metaLabels.area.value}
-												</span>
-												<span className="mt-0.5 block truncate font-sans text-xs font-medium text-neutral-800">
-													{project.area.value}
-												</span>
-											</div>
+											<span className="block font-sans text-[10px] font-semibold tracking-widest text-neutral-400 uppercase">
+												{cell.label}
+											</span>
+											<span className="mt-1 block truncate font-serif text-xl font-normal text-neutral-900 sm:text-2xl">
+												{cell.value || "—"}
+											</span>
 										</div>
-									</div>
+									))}
 								</div>
-							</article>
-						))}
+
+								{/* Stakeholders */}
+								<div className="mt-4 grid grid-cols-3 divide-x divide-neutral-300/70 border-t border-neutral-300/80 pt-4 rtl:divide-x-reverse">
+									{[
+										{ label: content.metaLabels.owner.value, value: project.owner.value },
+										{ label: content.metaLabels.consultant.value, value: project.consultant.value },
+										{ label: content.metaLabels.contractor.value, value: project.contractor.value }
+									].map((cell) => (
+										<div
+											key={cell.label}
+											className="px-2 first:pl-0 last:pr-0"
+										>
+											<span className="block font-sans text-[10px] font-semibold tracking-widest text-neutral-400 uppercase">
+												{cell.label}
+											</span>
+											<span className="mt-0.5 block truncate font-sans text-sm font-medium text-neutral-900">
+												{cell.value || "—"}
+											</span>
+										</div>
+									))}
+								</div>
+
+								{/* Commercial */}
+								<div className="mt-4 grid grid-cols-2 divide-x divide-neutral-300/70 border-t border-neutral-300/80 pt-4 rtl:divide-x-reverse">
+									{[
+										{ label: content.metaLabels.startingPrice.value, value: project.startingPrice.value },
+										{ label: content.metaLabels.contractValue.value, value: project.contractValue.value }
+									].map((cell) => (
+										<div
+											key={cell.label}
+											className="pr-2 first:pl-0 last:pr-0"
+										>
+											<span className="block font-sans text-[10px] font-semibold tracking-widest text-neutral-400 uppercase">
+												{cell.label}
+											</span>
+											<span className="mt-1 block truncate font-serif text-xl font-normal text-neutral-900 sm:text-2xl">
+												{cell.value || "—"}
+											</span>
+										</div>
+									))}
+								</div>
+							</div>
+						</article>
+					))}
 					</div>
+
+					{/* Pagination */}
+					{totalPages > 1 && (
+						<nav
+							aria-label={content.filterLabels.paginationLabel.value}
+							className="mt-16 flex items-center justify-center gap-3 border-t border-neutral-300/70 pt-8"
+						>
+							<button
+								type="button"
+								disabled={activePage === 1}
+								onClick={() => setPage((p) => Math.max(1, p - 1))}
+								className="inline-flex items-center gap-1.5 font-sans text-xs font-medium text-neutral-500 transition-colors hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-40"
+							>
+								<ChevronLeft className="size-4 rtl:rotate-180" />
+								<span className="hidden sm:inline">{content.filterLabels.prev.value}</span>
+							</button>
+
+							<div className="flex items-center gap-1.5">
+								{Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+									<button
+										key={n}
+										type="button"
+										onClick={() => setPage(n)}
+										aria-current={n === activePage ? "page" : undefined}
+										className={
+											n === activePage
+												? "flex size-8 items-center justify-center bg-neutral-900 font-sans text-xs font-semibold text-white"
+												: "flex size-8 items-center justify-center font-sans text-xs font-medium text-neutral-500 transition-colors hover:text-neutral-900"
+										}
+									>
+										{n}
+									</button>
+								))}
+							</div>
+
+							<button
+								type="button"
+								disabled={activePage === totalPages}
+								onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+								className="inline-flex items-center gap-1.5 font-sans text-xs font-medium text-neutral-500 transition-colors hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-40"
+							>
+								<span className="hidden sm:inline">{content.filterLabels.next.value}</span>
+								<ChevronRight className="size-4 rtl:rotate-180" />
+							</button>
+						</nav>
+					)}
+					</>
 				) : !isSpotlightVisible ? (
 					/* Empty State when no item and no spotlight matches */
 					<div className="mt-16 flex flex-col items-center justify-center border border-dashed border-neutral-300 py-20 text-center">

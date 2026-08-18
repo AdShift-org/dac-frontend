@@ -1,7 +1,9 @@
 import type { FC, PointerEvent as ReactPointerEvent } from "react";
 import { useEffect, useRef } from "react";
 
-import { useIntlayer } from "react-intlayer";
+import { useIntlayer, useLocale } from "react-intlayer";
+
+import { pickSection, useCmsData, type Locale } from "@/lib/cms";
 
 import client1 from "#/assets/home/clients/1.png";
 import client2 from "#/assets/home/clients/2.png";
@@ -9,7 +11,13 @@ import client3 from "#/assets/home/clients/3.png";
 import client4 from "#/assets/home/clients/4.png";
 import client5 from "#/assets/home/clients/5.png";
 
-const clientLogos = [
+interface MarqueeItem {
+	id: string | number;
+	src: string;
+	alt: string;
+}
+
+const fallbackLogos: MarqueeItem[] = [
 	{ id: 1, src: client1, alt: "Emaar" },
 	{ id: 2, src: client2, alt: "Danube Properties" },
 	{ id: 3, src: client3, alt: "Intermass" },
@@ -18,7 +26,7 @@ const clientLogos = [
 ];
 
 interface InteractiveMarqueeProps {
-	items: typeof clientLogos;
+	items: MarqueeItem[];
 	speed?: number;
 	reverse?: boolean;
 }
@@ -193,35 +201,55 @@ const InteractiveMarquee: FC<InteractiveMarqueeProps> = ({
 
 export const Clients: FC = () => {
 	const content = useIntlayer("home-clients");
+	const { locale } = useLocale();
+	const { home } = useCmsData();
+	const s = pickSection(home, "clients_section", locale as Locale);
+
+	const groups = (() => {
+		const countries = s?.client_countries as
+			| { en?: { country?: string; clients?: string[] }; ar?: { country?: string; clients?: string[] } }[]
+			| undefined;
+		if (countries?.length) {
+			return countries.map((country) => {
+				const side = locale === "ar" ? country.ar : country.en;
+				const title = side?.country ?? "";
+				return {
+					title,
+					items: (side?.clients ?? []).map((src, i) => ({ id: i, src, alt: title }))
+				};
+			});
+		}
+		return [
+			{ title: content.egyptTitle.value, items: fallbackLogos },
+			{ title: content.uaeTitle.value, items: fallbackLogos }
+		];
+	})();
+
+	console.log(groups);
 
 	return (
 		<section className="border-b border-border bg-background py-16 text-foreground sm:py-24">
 			<div className="mx-auto max-w-7xl px-4 sm:px-8">
-				{/* Egypt Clients Row */}
-				<div className="mb-14 sm:mb-20">
-					<div className="mb-4 flex items-center">
-						<p className="font-sans text-xs tracking-wider text-neutral-600 uppercase sm:text-sm dark:text-neutral-400">
-							<span className="inline-block w-8 border-t border-neutral-600"></span>{" "}
-							{content.egyptTitle.value}
-						</p>
+				{groups.map((group, index) => (
+					<div
+						key={group.title}
+						className={index < groups.length - 1 ? "mb-14 sm:mb-20" : ""}
+					>
+						<div className="mb-4 flex items-center">
+							<p className="font-sans text-xs tracking-wider text-neutral-600 uppercase sm:text-sm dark:text-neutral-400">
+								<span className="inline-block w-8 border-t border-neutral-600"></span>{" "}
+								{group.title}
+							</p>
+						</div>
+						<div className="border-t border-border pt-4 sm:pt-6">
+							<InteractiveMarquee
+								items={group.items}
+								speed={index % 2 === 0 ? 38 : 32}
+								reverse={index % 2 === 1}
+							/>
+						</div>
 					</div>
-					<div className="border-t border-border pt-4 sm:pt-6">
-						<InteractiveMarquee items={clientLogos} speed={38} />
-					</div>
-				</div>
-
-				{/* UAE / Dubai Clients Row */}
-				<div>
-					<div className="mb-4 flex items-center">
-						<p className="font-sans text-xs tracking-wider text-neutral-600 uppercase sm:text-sm dark:text-neutral-400">
-							<span className="inline-block w-8 border-t border-neutral-600"></span>{" "}
-							{content.uaeTitle.value}
-						</p>
-					</div>
-					<div className="border-t border-border pt-4 sm:pt-6">
-						<InteractiveMarquee items={clientLogos} speed={32} reverse />
-					</div>
-				</div>
+				))}
 			</div>
 		</section>
 	);

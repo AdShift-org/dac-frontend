@@ -48,6 +48,18 @@ const projectsListContent = {
 				en: "No projects match the selected criteria.",
 				ar: "لا توجد مشاريع تطابق المعايير المحددة."
 			}),
+			prev: t({
+				en: "Prev",
+				ar: "السابق"
+			}),
+			next: t({
+				en: "Next",
+				ar: "التالي"
+			}),
+			paginationLabel: t({
+				en: "Project pages",
+				ar: "صفحات المشاريع"
+			}),
 			showing: t({
 				en: "Showing",
 				ar: "عرض"
@@ -77,11 +89,81 @@ const projectsListContent = {
 			year: t({
 				en: "YEAR",
 				ar: "السنة"
+			}),
+			units: t({
+				en: "UNITS",
+				ar: "الوحدات"
+			}),
+			builtUp: t({
+				en: "BUILT-UP",
+				ar: "المساحة البنائية"
+			}),
+			delivery: t({
+				en: "DELIVERY",
+				ar: "التسليم"
+			}),
+			owner: t({
+				en: "OWNER",
+				ar: "المالك"
+			}),
+			consultant: t({
+				en: "CONSULTANT",
+				ar: "الاستشاري"
+			}),
+			contractor: t({
+				en: "CONTRACTOR",
+				ar: "المقاول"
+			}),
+			startingPrice: t({
+				en: "STARTING PRICE",
+				ar: "سعر البداية"
+			}),
+			contractValue: t({
+				en: "CONTRACT VALUE",
+				ar: "قيمة العقد"
+			})
+		},
+		statuses: {
+			completed: t({
+				en: "Completed",
+				ar: "مكتمل"
+			}),
+			under_construction: t({
+				en: "Under Construction",
+				ar: "قيد الإنشاء"
+			}),
+			in_progress: t({
+				en: "In Progress",
+				ar: "قيد التنفيذ"
+			}),
+			in_planning: t({
+				en: "In Planning",
+				ar: "في مرحلة التخطيط"
+			}),
+			planning: t({
+				en: "In Planning",
+				ar: "في مرحلة التخطيط"
+			}),
+			ongoing: t({
+				en: "Ongoing",
+				ar: "قيد التنفيذ"
+			}),
+			masterplan: t({
+				en: "Masterplan",
+				ar: "مخطط رئيسي"
+			}),
+			launched: t({
+				en: "Launched",
+				ar: "تم الإطلاق"
 			})
 		},
 		viewProject: t({
 			en: "VIEW PROJECT",
 			ar: "عرض المشروع"
+		}),
+		projectData: t({
+			en: "Project Data",
+			ar: "بيانات المشروع"
 		}),
 		spotlight: {
 			id: "the-monolith-residence",
