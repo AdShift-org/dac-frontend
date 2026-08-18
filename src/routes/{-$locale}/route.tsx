@@ -9,10 +9,12 @@ import { unfoldAr } from "@/lib/cms";
 
 export const Route = createFileRoute("/{-$locale}")({
 	loader: async () => {
-		const [services, projects, home] = await Promise.all([
+		const [services, projects, home, contact, about] = await Promise.all([
 			client.GET("/api/services"),
 			client.GET("/api/projects"),
-			client.GET("/api/pages/{page}", { params: { path: { page: "home" } } })
+			client.GET("/api/pages/{page}", { params: { path: { page: "home" } } }),
+			client.GET("/api/pages/{page}", { params: { path: { page: "contact-us" } } }),
+			client.GET("/api/pages/{page}", { params: { path: { page: "about-us" } } })
 		]);
 
 		return {
@@ -24,7 +26,9 @@ export const Route = createFileRoute("/{-$locale}")({
 				...item,
 				ar: unfoldAr(item.ar) as typeof item.ar
 			})),
-			home: home.data?.sections ?? {}
+			home: home.data?.sections ?? {},
+			contact: contact.data?.sections ?? {},
+			about: about.data?.sections ?? {}
 		};
 	},
 	component: RouteComponent,
