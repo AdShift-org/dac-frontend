@@ -5,6 +5,7 @@ import { IntlayerProvider } from "react-intlayer";
 import { Header } from "#/components/header";
 import { NotFound } from "#/components/not-found";
 import { client } from "@/lib/oapi-client";
+import { unfoldAr } from "@/lib/cms";
 
 export const Route = createFileRoute("/{-$locale}")({
 	loader: async () => {
@@ -15,8 +16,14 @@ export const Route = createFileRoute("/{-$locale}")({
 		]);
 
 		return {
-			services: services.data?.data ?? [],
-			projects: projects.data?.data ?? [],
+			services: (services.data?.data ?? []).map((item) => ({
+				...item,
+				ar: unfoldAr(item.ar) as typeof item.ar
+			})),
+			projects: (projects.data?.data ?? []).map((item) => ({
+				...item,
+				ar: unfoldAr(item.ar) as typeof item.ar
+			})),
 			home: home.data?.sections ?? {}
 		};
 	},
