@@ -2,10 +2,13 @@ import { useMemo, useState, type FC } from "react";
 
 import { useIntlayer, useLocale } from "react-intlayer";
 
+import { Link } from "@/components/localized-link";
+
+import { useCmsData } from "@/lib/cms";
+
 import { ArrowRight, ChevronDown, RotateCcw, Sparkles } from "lucide-react";
 
-import { Link } from "@/components/localized-link";
-import { useCmsData } from "@/lib/cms";
+import dacLogo from "#/assets/dac-logo.png";
 
 export const ProjectsList: FC = () => {
 	const content = useIntlayer("projects-list");
@@ -14,111 +17,102 @@ export const ProjectsList: FC = () => {
 
 	// Filter state
 	const [statusFilter, setStatusFilter] = useState<string>("all");
-	const [typologyFilter, setTypologyFilter] = useState<string>("all");
 	const [sectorFilter, setSectorFilter] = useState<string>("all");
-
-	// Spotlight item (curated fallback; backend has no featured concept)
-	const spotlight = content.spotlight;
 
 	// All items
 	const items = useMemo(() => {
 		const api = projects ?? [];
 		if (!api.length) return content.items;
 
-		return api.map((raw) => {
-			const p = (locale === "ar" ? raw.ar : raw.en) as {
-				slug: string;
-				status: string;
-				title?: string | null;
-				name?: string;
-				description?: string | null;
-				location?: string | null;
-				area?: string | null;
-				delivery_year?: number | null;
-				images?: string[];
-				service?: { en: { name: string }; ar: { name: string } } | null;
-			};
-			const service = p.service ? (locale === "ar" ? p.service.ar : p.service.en) : null;
+		return api
+			.map((raw) => {
+				const p = (locale === "ar" ? raw.ar : raw.en) as {
+					slug: string;
+					status: string;
+					title?: string | null;
+					name?: string;
+					description?: string | null;
+					location?: string | null;
+					area?: string | null;
+					delivery_year?: number | null;
+					images?: string[];
+					created_at?: string | null;
+					service?: { en: { name: string }; ar: { name: string } } | null;
+				};
+				const service = p.service ? (locale === "ar" ? p.service.ar : p.service.en) : null;
 
-			return {
-				id: { value: p.slug },
-				statusKey: { value: p.status },
-				typologyKey: { value: "" },
-				sectorKey: { value: "" },
-				badge: { value: "PROJECT" },
-				title: { value: (p.title || p.name) ?? "" },
-				description: { value: p.description ?? "" },
-				year: { value: p.delivery_year ? String(p.delivery_year) : "" },
-				location: { value: p.location ?? "" },
-				sector: { value: service ? service.name : "" },
-				status: { value: p.status },
-				area: { value: p.area ?? "" },
-				image: { value: p.images?.[0] ?? "" }
-			};
-		});
+				return {
+					id: { value: p.slug },
+					statusKey: { value: p.status },
+					typologyKey: { value: "" },
+					sectorKey: { value: service ? service.name : "" },
+					badge: { value: "PROJECT" },
+					title: { value: (p.title || p.name) ?? "" },
+					description: { value: p.description ?? "" },
+					year: { value: p.delivery_year ? String(p.delivery_year) : "" },
+					location: { value: p.location ?? "" },
+					sector: { value: service ? service.name : "" },
+					status: { value: p.status },
+					area: { value: p.area ?? "" },
+					image: { value: p.images?.[0] || dacLogo },
+					createdAt: p.created_at ?? ""
+				};
+			})
+			.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 	}, [projects, locale, content]);
 
-	// Filter options
+	// Spotlight = first project from backend (ponytail: no featured flag in API)
+	const spotlight = useMemo(() => {
+		if (!items.length) return null;
+		return items[0];
+	}, [items]);
+
 	const statusOptions = useMemo(
 		() => [
 			{ value: "all", label: content.filterLabels.allStatuses.value },
-			{ value: "completed", label: "Completed" },
-			{ value: "ongoing", label: "Ongoing" },
-			{ value: "in-progress", label: "In Progress" },
-			{ value: "in-planning", label: "In Planning" },
-			{ value: "masterplan", label: "Masterplan" }
+			...Array.from(new Set(items.map((i) => i.statusKey.value).filter(Boolean))).map(
+				(v) => ({
+					value: v,
+					label: v
+				})
+			)
 		],
-		[content]
-	);
-
-	const typologyOptions = useMemo(
-		() => [
-			{ value: "all", label: content.filterLabels.allTypologies.value },
-			{ value: "residential", label: "Residential" },
-			{ value: "commercial", label: "Commercial" }
-		],
-		[content]
+		[items, content]
 	);
 
 	const sectorOptions = useMemo(
 		() => [
 			{ value: "all", label: content.filterLabels.allSectors.value },
-			{ value: "architecture", label: "Architecture" },
-			{ value: "residential", label: "Residential" },
-			{ value: "commercial", label: "Commercial" }
+			...Array.from(new Set(items.map((i) => i.sectorKey.value).filter(Boolean))).map(
+				(v) => ({
+					value: v,
+					label: v
+				})
+			)
 		],
-		[content]
+		[items, content]
 	);
 
 	// Filtering logic
 	const isSpotlightVisible = useMemo(() => {
-		const matchStatus =
-			statusFilter === "all" || spotlight.statusKey?.value === statusFilter;
-		const matchTypology =
-			typologyFilter === "all" || spotlight.typologyKey?.value === typologyFilter;
-		const matchSector =
-			sectorFilter === "all" || spotlight.sectorKey?.value === sectorFilter;
-		return matchStatus && matchTypology && matchSector;
-	}, [statusFilter, typologyFilter, sectorFilter, spotlight]);
+		if (!spotlight) return false;
+		const matchStatus = statusFilter === "all" || spotlight.statusKey.value === statusFilter;
+		const matchSector = sectorFilter === "all" || spotlight.sectorKey.value === sectorFilter;
+		return matchStatus && matchSector;
+	}, [statusFilter, sectorFilter, spotlight]);
 
 	const filteredItems = useMemo(() => {
 		return items.filter((item) => {
-			const matchStatus =
-				statusFilter === "all" || item.statusKey?.value === statusFilter;
-			const matchTypology =
-				typologyFilter === "all" || item.typologyKey?.value === typologyFilter;
-			const matchSector =
-				sectorFilter === "all" || item.sectorKey?.value === sectorFilter;
-			return matchStatus && matchTypology && matchSector;
+			const matchStatus = statusFilter === "all" || item.statusKey?.value === statusFilter;
+			const matchSector = sectorFilter === "all" || item.sectorKey?.value === sectorFilter;
+			return matchStatus && matchSector;
 		});
-	}, [items, statusFilter, typologyFilter, sectorFilter]);
+	}, [items, statusFilter, sectorFilter]);
 
-	const isFiltered =
-		statusFilter !== "all" || typologyFilter !== "all" || sectorFilter !== "all";
+	const isFiltered = statusFilter !== "all" || sectorFilter !== "all";
 
 	const clearAllFilters = () => {
 		setStatusFilter("all");
-		setTypologyFilter("all");
 		setSectorFilter("all");
 	};
 
@@ -169,27 +163,6 @@ export const ProjectsList: FC = () => {
 							</div>
 						</div>
 
-						{/* Typology Filter */}
-						<div className="flex items-center gap-2">
-							<span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-neutral-500 uppercase">
-								{content.filterLabels.typology.value}:
-							</span>
-							<div className="relative inline-block">
-								<select
-									value={typologyFilter}
-									onChange={(e) => setTypologyFilter(e.target.value)}
-									className="cursor-pointer appearance-none rounded-none border-b border-neutral-400 bg-transparent pr-6 pl-1 font-sans text-xs font-medium text-neutral-900 transition-colors focus:border-neutral-900 focus:outline-none"
-								>
-									{typologyOptions.map((opt) => (
-										<option key={opt.value} value={opt.value}>
-											{opt.label}
-										</option>
-									))}
-								</select>
-								<ChevronDown className="pointer-events-none absolute top-1/2 right-0 size-3 -translate-y-1/2 text-neutral-600" />
-							</div>
-						</div>
-
 						{/* Sector Filter */}
 						<div className="flex items-center gap-2">
 							<span className="font-sans text-[11px] font-semibold tracking-[0.18em] text-neutral-500 uppercase">
@@ -228,16 +201,22 @@ export const ProjectsList: FC = () => {
 				</div>
 
 				{/* Spotlight Featured Section */}
-				{isSpotlightVisible && (
+				{isSpotlightVisible && spotlight && (
 					<div className="mt-14 overflow-hidden border border-neutral-300/80 bg-[#f8f6f0] p-6 sm:p-8 lg:p-10">
 						<div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
 							{/* Spotlight Image */}
 							<div className="relative aspect-[16/10] w-full overflow-hidden rounded-xs bg-neutral-900 lg:col-span-6">
-								<img
-									src={spotlight.image.value}
-									alt={spotlight.title.value}
-									className="size-full object-cover transition-transform duration-700 hover:scale-105"
-								/>
+								<div className="flex size-full items-center justify-center">
+									<img
+										src={spotlight.image.value}
+										alt={spotlight.title.value}
+										className={
+											spotlight.image.value === dacLogo
+												? "size-1/2 object-contain opacity-40"
+												: "size-full object-cover transition-transform duration-700 hover:scale-105"
+										}
+									/>
+								</div>
 								{/* Badge */}
 								<div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full bg-black/75 px-3 py-1 text-[10px] font-semibold tracking-widest text-white uppercase backdrop-blur-xs">
 									<span className="size-1.5 rounded-full bg-emerald-400" />
@@ -249,11 +228,11 @@ export const ProjectsList: FC = () => {
 							<div className="flex flex-col justify-between lg:col-span-6">
 								<div>
 									<span className="font-sans text-[11px] font-semibold tracking-[0.2em] text-neutral-500 uppercase">
-										{spotlight.tag.value}
+										{spotlight.sector.value}
 									</span>
 
 									<h3 className="mt-2.5 font-serif text-2xl leading-tight font-normal text-neutral-900 sm:text-3xl lg:text-4xl">
-										{spotlight.title.value}
+										{spotlight!.title.value}
 									</h3>
 
 									<p className="mt-4 font-sans text-xs leading-relaxed font-light text-neutral-600 sm:text-sm">
@@ -262,7 +241,7 @@ export const ProjectsList: FC = () => {
 
 									<div className="mt-6 border-t border-neutral-300/70 pt-4">
 										<h4 className="font-serif text-lg font-normal text-neutral-800">
-											{spotlight.subHeading.value}
+											{spotlight.title.value}
 										</h4>
 										<div className="mt-3 flex items-center gap-8">
 											<div>
@@ -288,7 +267,7 @@ export const ProjectsList: FC = () => {
 								<div className="mt-8">
 									<Link
 										to={`/projects/${spotlight.id.value}` as never}
-										className="group inline-flex items-center gap-2 font-sans text-xs font-bold tracking-[0.2em] text-neutral-900 uppercase transition-colors hover:text-accent"
+										className="group inline-flex items-center gap-2 px-4 py-2 font-sans text-xs font-bold tracking-[0.2em] text-neutral-900 uppercase transition-colors hover:bg-accent/10 hover:text-accent focus-visible:bg-accent/10 focus-visible:text-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
 									>
 										<span>{content.viewProject.value}</span>
 										<ArrowRight className="size-4 transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
@@ -307,13 +286,19 @@ export const ProjectsList: FC = () => {
 								{/* Card Image */}
 								<Link
 									to={`/projects/${project.id.value}` as never}
-									className="relative aspect-[16/10] w-full overflow-hidden rounded-xs bg-neutral-900"
+									className="relative aspect-16/10 w-full overflow-hidden rounded-xs bg-neutral-900"
 								>
-									<img
-										src={project.image.value}
-										alt={project.title.value}
-										className="size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-									/>
+									<div className="flex size-full items-center justify-center">
+										<img
+											src={project.image.value}
+											alt={project.title.value}
+											className={
+												project.image.value === dacLogo
+													? "mx-auto size-1/2 object-contain opacity-40"
+													: "size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+											}
+										/>
+									</div>
 									{/* Badge */}
 									<div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full bg-black/75 px-3 py-1 text-[10px] font-semibold tracking-widest text-white uppercase backdrop-blur-xs">
 										{project.badge.value.toLowerCase().includes("featured") && (
