@@ -1,11 +1,17 @@
 import type { FC } from "react";
 
-import { useIntlayer } from "react-intlayer";
+import { useIntlayer, useLocale } from "react-intlayer";
 
-import heroImg from "#/assets/media/hero.png";
+import heroImgAsset from "#/assets/media/hero.png";
+import { pickSection, useCmsData, type Locale } from "#/lib/cms";
 
 export const MediaHero: FC = () => {
 	const content = useIntlayer("media-hero");
+
+	const { locale } = useLocale();
+	const { media } = useCmsData();
+	const s = pickSection(media, "header", locale as Locale);
+	const heroImg = s?.image || heroImgAsset;
 
 	const handleScrollDown = () => {
 		const target = document.getElementById("latest-news-section");

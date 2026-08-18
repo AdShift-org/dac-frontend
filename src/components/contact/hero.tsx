@@ -2,18 +2,19 @@ import { useRef, type FC } from "react";
 
 import { useIntlayer, useLocale } from "react-intlayer";
 
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
+
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
-import { useCmsData, pickSection, type Locale } from "@/lib/cms";
-
-import heroImg from "#/assets/contact/hero.png";
+import heroImgAsset from "#/assets/contact/hero.png";
 
 export const Hero: FC = () => {
 	const content = useIntlayer("contact-hero");
 	const { locale } = useLocale();
 	const { contact } = useCmsData();
 	const s = pickSection(contact, "header_section", locale as Locale);
+	const heroImg = s?.image || heroImgAsset;
 	const str = (key: string, fallback: string) => (s?.[key] as string) || fallback;
 	const containerRef = useRef<HTMLDivElement>(null);
 
