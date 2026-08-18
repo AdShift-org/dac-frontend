@@ -1,10 +1,11 @@
 import type { FC } from "react";
 
-import { useIntlayer } from "react-intlayer";
+// import { useIntlayer } from "react-intlayer";
 
-import { ArrowUpRight, Play } from "lucide-react";
+// import { ArrowUpRight, Play } from "lucide-react";
+import { Play } from "lucide-react";
 
-import { Link } from "@/components/localized-link";
+// import { Link } from "@/components/localized-link";
 
 import type { ProjectDetailData } from "./project-detail-data";
 
@@ -14,7 +15,7 @@ interface ProjectDetailHeroProps {
 }
 
 export const ProjectDetailHero: FC<ProjectDetailHeroProps> = ({ project, isArabic }) => {
-	const content = useIntlayer("project-detail");
+	// const content = useIntlayer("project-detail"); // DISABLED with progress button above
 
 	return (
 		<section className="relative flex min-h-[90vh] w-full flex-col justify-between overflow-hidden bg-black text-white sm:min-h-screen">
@@ -52,7 +53,8 @@ export const ProjectDetailHero: FC<ProjectDetailHeroProps> = ({ project, isArabi
 						</p>
 					</div>
 
-					{project.isUnderConstruction && (
+					{/* DISABLED: progress page is hidden for now. Restore this block with the progress route. */}
+					{/* {project.isUnderConstruction && (
 						<div className="shrink-0">
 							<Link
 								to={`/projects/${project.id}/progress` as never}
@@ -63,7 +65,7 @@ export const ProjectDetailHero: FC<ProjectDetailHeroProps> = ({ project, isArabi
 								<ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 rtl:rotate-90 rtl:group-hover:-translate-x-0.5" />
 							</Link>
 						</div>
-					)}
+					)} */}
 				</div>
 			</div>
 		</section>

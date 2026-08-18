@@ -1,3 +1,8 @@
+/*
+	DISABLED (commented out) — progress route is hidden for now.
+	Restore by uncommenting this file.
+*/
+/*
 import { createFileRoute } from "@tanstack/react-router";
 import { defaultLocale } from "intlayer";
 
@@ -21,3 +26,4 @@ function RouteComponent() {
 		</main>
 	);
 }
+*/

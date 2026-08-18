@@ -1,3 +1,8 @@
+/*
+	DISABLED (commented out) — project detail routes are hidden for now.
+	Restore by uncommenting this file.
+*/
+/*
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 import { defaultLocale } from "intlayer";
@@ -13,3 +18,4 @@ export const Route = createFileRoute("/{-$locale}/projects/$projectId")({
 function RouteComponent() {
 	return <Outlet />;
 }
+*/

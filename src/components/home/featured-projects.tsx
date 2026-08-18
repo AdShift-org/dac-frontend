@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight } from "lucide-react";
 
-import { Link } from "../localized-link";
+// import { Link } from "../localized-link"; // DISABLED with project links
 import { useCmsData } from "@/lib/cms";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -189,7 +189,8 @@ export const FeaturedProjects: FC = () => {
 									</p>
 								</div>
 
-								{/* Bottom: Discover Project Link */}
+								{/* DISABLED: project detail page is hidden. Restore this link with the route. */}
+								{/*
 								<Link
 									to="/projects/$projectId"
 									params={{ projectId: project.slug }}
@@ -199,6 +200,7 @@ export const FeaturedProjects: FC = () => {
 										{content.discover?.value ?? "DISCOVER PROJECT"}
 									</span>
 								</Link>
+								*/}
 							</div>
 						</div>
 					))}

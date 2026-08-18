@@ -1,12 +1,12 @@
 import { useMemo, useState, type FC } from "react";
 
 import { useIntlayer, useLocale } from "react-intlayer";
-
-import { Link } from "@/components/localized-link";
+// import { Link } from "@/components/localized-link"; // DISABLED with project links
 
 import { useCmsData } from "@/lib/cms";
 
-import { ArrowRight, ChevronDown, RotateCcw, Sparkles } from "lucide-react";
+// import { ArrowRight, ChevronDown, RotateCcw, Sparkles } from "lucide-react";
+import { ChevronDown, RotateCcw, Sparkles } from "lucide-react";
 
 import dacLogo from "#/assets/dac-logo.png";
 
@@ -265,6 +265,8 @@ export const ProjectsList: FC = () => {
 								</div>
 
 								<div className="mt-8">
+									{/* DISABLED: project detail page is hidden. */}
+									{/*
 									<Link
 										to={`/projects/${spotlight.id.value}` as never}
 										className="group inline-flex items-center gap-2 px-4 py-2 font-sans text-xs font-bold tracking-[0.2em] text-neutral-900 uppercase transition-colors hover:bg-accent/10 hover:text-accent focus-visible:bg-accent/10 focus-visible:text-accent focus-visible:ring-2 focus-visible:ring-accent focus-visible:outline-none"
@@ -272,6 +274,7 @@ export const ProjectsList: FC = () => {
 										<span>{content.viewProject.value}</span>
 										<ArrowRight className="size-4 transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
 									</Link>
+									*/}
 								</div>
 							</div>
 						</div>
@@ -284,6 +287,8 @@ export const ProjectsList: FC = () => {
 						{filteredItems.map((project) => (
 							<article key={project.id.value} className="group flex flex-col">
 								{/* Card Image */}
+								{/* DISABLED: project detail page is hidden. */}
+								{/*
 								<Link
 									to={`/projects/${project.id.value}` as never}
 									className="relative aspect-16/10 w-full overflow-hidden rounded-xs bg-neutral-900"
@@ -299,7 +304,7 @@ export const ProjectsList: FC = () => {
 											}
 										/>
 									</div>
-									{/* Badge */}
+									Badge
 									<div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full bg-black/75 px-3 py-1 text-[10px] font-semibold tracking-widest text-white uppercase backdrop-blur-xs">
 										{project.badge.value.toLowerCase().includes("featured") && (
 											<span className="size-1.5 rounded-full bg-amber-400" />
@@ -307,11 +312,30 @@ export const ProjectsList: FC = () => {
 										<span>{project.badge.value}</span>
 									</div>
 								</Link>
-
+								*/}
+								<div className="flex size-full items-center justify-center bg-black/20">
+									<img
+										src={project.image.value}
+										alt={project.title.value}
+										className={
+											project.image.value === dacLogo
+												? "mx-auto size-1/2 object-contain opacity-40"
+												: "size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+										}
+									/>
+								</div>
+								<div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full bg-black/75 px-3 py-1 text-[10px] font-semibold tracking-widest text-white uppercase backdrop-blur-xs">
+									{project.badge.value.toLowerCase().includes("featured") && (
+										<span className="size-1.5 rounded-full bg-amber-400" />
+									)}
+									<span>{project.badge.value}</span>
+								</div>
 								{/* Card Info */}
 								<div className="mt-5 flex flex-1 flex-col">
 									{/* Title & Year */}
 									<div className="flex items-baseline justify-between gap-4">
+										{/* DISABLED: project detail page is hidden. */}
+										{/*
 										<Link
 											to={`/projects/${project.id.value}` as never}
 											className="transition-colors hover:text-neutral-600"
@@ -320,6 +344,10 @@ export const ProjectsList: FC = () => {
 												{project.title.value}
 											</h3>
 										</Link>
+										*/}
+										<h3 className="font-serif text-2xl font-normal text-neutral-900 sm:text-3xl">
+											{project.title.value}
+										</h3>
 										<span className="font-serif text-3xl font-light text-neutral-400 sm:text-4xl">
 											{project.year.value}
 										</span>

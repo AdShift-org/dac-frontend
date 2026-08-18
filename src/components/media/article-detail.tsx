@@ -5,7 +5,8 @@ import { useIntlayer, useLocale } from "react-intlayer";
 
 import { Link } from "@/components/localized-link";
 
-import { ArrowLeft, ArrowRight, Quote } from "lucide-react";
+// import { ArrowLeft, ArrowRight, Quote } from "lucide-react";
+import { ArrowLeft, Quote } from "lucide-react";
 
 import { getMediaArticleById, type MediaArticle } from "./media-data";
 
@@ -254,6 +255,8 @@ export const ArticleDetail: FC<ArticleDetailProps> = ({ articleId }) => {
 								</p>
 
 								<div className="mt-8">
+									{/* DISABLED: project detail page is hidden. */}
+									{/*
 									<Link
 										to={
 											`/projects/${article.relatedCaseStudy.projectId}` as never
@@ -263,6 +266,7 @@ export const ArticleDetail: FC<ArticleDetailProps> = ({ articleId }) => {
 										<span>{content.viewProject.value}</span>
 										<ArrowRight className="size-4 rtl:rotate-180" />
 									</Link>
+									*/}
 								</div>
 							</div>
 
