@@ -1,7 +1,9 @@
-import { useRef, type FC } from "react";
+import { useMemo, useRef, type FC } from "react";
 
 import { useGSAP } from "@gsap/react";
 import { useIntlayer, useLocale } from "react-intlayer";
+
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -18,6 +20,21 @@ const images = [emiratiPartner, ceo, generalManager, generalManager2];
 export const Leadership: FC = () => {
 	const content = useIntlayer("home-leadership");
 	const { locale } = useLocale();
+	const { home } = useCmsData();
+	const s = pickSection(home, "team_members_section", locale as Locale);
+	const str = (key: string, fallback: string) => (s?.[key] as string) || fallback;
+
+	const members = useMemo(() => {
+		const api = (s?.members as Array<Record<string, unknown>> | undefined) ?? [];
+		if (!api.length) return content.members;
+		return api.map((m) => {
+			const loc = (locale === "ar" ? m.ar : m.en) as { name?: string; title?: string };
+			return {
+				name: { value: loc.name || "" },
+				role: { value: loc.title || "" }
+			};
+		});
+	}, [s, content, locale]);
 
 	const sectionRef = useRef<HTMLElement>(null);
 
@@ -69,19 +86,19 @@ export const Leadership: FC = () => {
 				<div className="ld-head flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
 						<div>
 							<span className="ld-label font-sans text-xs font-semibold tracking-[0.25em] text-accent uppercase">
-								— {content.label.value}
+								— {str("header_title", content.label.value)}
 							</span>
 							<h2 className="mt-4 font-sans text-3xl font-extrabold tracking-tight text-white uppercase sm:text-4xl">
-								{content.heading.value}
+								{str("title", content.heading.value)}
 							</h2>
 						</div>
 						<p className="font-sans text-xs tracking-[0.2em] text-white/50 uppercase">
-							{content.subtitle.value}
+							{str("header_title", content.subtitle.value)}
 						</p>
 					</div>
 
 					<div className="ld-grid mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-						{content.members.map((member, index) => (
+						{members.map((member, index) => (
 							<div
 								key={index}
 								className="ld-card group relative aspect-[3/4] overflow-hidden rounded-sm bg-neutral-900 shadow-xl"

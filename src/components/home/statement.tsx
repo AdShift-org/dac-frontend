@@ -3,6 +3,8 @@ import { useRef, type FC } from "react";
 import { useGSAP } from "@gsap/react";
 import { useIntlayer, useLocale } from "react-intlayer";
 
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
+
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Building2, Calendar, Globe } from "lucide-react";
@@ -12,6 +14,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export const Statement: FC = () => {
 	const content = useIntlayer("home-statement");
 	const { locale } = useLocale();
+	const { home } = useCmsData();
+	const s = pickSection(home, "company_statement", locale as Locale);
+	const str = (key: string, fallback: string) => (s?.[key] as string) || fallback;
 
 	const sectionRef = useRef<HTMLElement>(null);
 
@@ -89,10 +94,10 @@ export const Statement: FC = () => {
 				<div className="grid gap-16 lg:grid-cols-12">
 					<div className="lg:col-span-6">
 						<span className="st-label font-sans text-xs font-semibold tracking-[0.25em] text-accent uppercase">
-							{content.label.value}
+							{str("header_title", content.label.value)}
 						</span>
 						<h2 className="st-head mt-4 font-sans text-4xl leading-[1.08] font-extrabold tracking-tight text-neutral-900 uppercase sm:text-5xl md:text-6xl">
-							<span className="block">{content.heading1.value}</span>
+							<span className="block">{str("title", content.heading1.value)}</span>
 							<span className="block">{content.heading2.value}</span>
 							<span className="block">{content.heading3.value}</span>
 						</h2>
@@ -101,7 +106,7 @@ export const Statement: FC = () => {
 					<div className="st-body flex flex-col justify-between lg:col-span-6">
 						<div>
 							<p className="text-base leading-relaxed font-light text-neutral-600 sm:text-lg">
-								{content.p1.value}
+								{str("description", content.p1.value)}
 							</p>
 							<p className="mt-4 text-base leading-relaxed font-light text-neutral-600 sm:text-lg">
 								{content.p2.value}
@@ -117,7 +122,7 @@ export const Statement: FC = () => {
 									{content.stats.established.value}
 								</p>
 								<p className="mt-1 text-sm font-bold tracking-tight text-neutral-900 sm:text-base">
-									{content.establishedValue.value}
+									{str("established_at", content.establishedValue.value)}
 								</p>
 							</div>
 
@@ -129,7 +134,7 @@ export const Statement: FC = () => {
 									{content.stats.headquarters.value}
 								</p>
 								<p className="mt-1 text-sm font-bold tracking-tight text-neutral-900 sm:text-base">
-									{content.headquartersValue.value}
+									{str("headquarters", content.headquartersValue.value)}
 								</p>
 							</div>
 
@@ -141,7 +146,7 @@ export const Statement: FC = () => {
 									{content.stats.presence.value}
 								</p>
 								<p className="mt-1 text-sm font-bold tracking-tight text-neutral-900 sm:text-base">
-									{content.presenceValue.value}
+									{str("presence", content.presenceValue.value)}
 								</p>
 							</div>
 						</div>

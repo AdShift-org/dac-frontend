@@ -3,6 +3,8 @@ import { useRef, type FC } from "react";
 import { useGSAP } from "@gsap/react";
 import { useIntlayer, useLocale } from "react-intlayer";
 
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
+
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -11,6 +13,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export const Philosophy: FC = () => {
 	const content = useIntlayer("home-philosophy");
 	const { locale } = useLocale();
+	const { home } = useCmsData();
+	const s = pickSection(home, "philosophy", locale as Locale);
+	const str = (key: string, fallback: string) => (s?.[key] as string) || fallback;
 
 	const sectionRef = useRef<HTMLElement>(null);
 
@@ -59,10 +64,10 @@ export const Philosophy: FC = () => {
 					{/* Left Content Column */}
 					<div className="lg:col-span-6">
 						<h2 className="ph-head font-sans text-4xl leading-[1.08] font-extrabold tracking-tight text-neutral-900 uppercase sm:text-5xl md:text-6xl">
-							{content.heading.value}
+							{str("title", content.heading.value)}
 						</h2>
 						<p className="ph-intro mt-6 max-w-lg text-sm leading-relaxed font-light text-neutral-600 sm:text-base">
-							{content.paragraph.value}
+							{str("description", content.paragraph.value)}
 						</p>
 
 						<div className="ph-principles mt-12 space-y-8">

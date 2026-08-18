@@ -3,7 +3,7 @@ import { useRef, type FC } from "react";
 import { useGSAP } from "@gsap/react";
 import { useIntlayer, useLocale } from "react-intlayer";
 
-import { useCmsData } from "@/lib/cms";
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -14,7 +14,9 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 export const Services: FC = () => {
 	const content = useIntlayer("home-services");
 	const { locale } = useLocale();
-	const { services } = useCmsData();
+	const { services, home } = useCmsData();
+	const s = pickSection(home, "services_section", locale as Locale);
+	const str = (key: string, fallback: string) => (s?.[key] as string) || fallback;
 
 	const serviceNames =
 		(services ?? []).length > 0
@@ -88,7 +90,7 @@ export const Services: FC = () => {
 								<span className="block">{content.heading2.value}</span>
 							</h2>
 							<p className="mt-6 max-w-sm text-sm leading-relaxed font-light text-neutral-600 sm:text-base">
-								{content.paragraph.value}
+								{str("description", content.paragraph.value)}
 							</p>
 						</div>
 

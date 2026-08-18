@@ -8,6 +8,8 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ArrowDown, ArrowRight } from "lucide-react";
 
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
+
 import dacLogo from "#/assets/dac-logo-no-slogan.png";
 import heroImg from "#/assets/home/hero.png";
 
@@ -16,6 +18,9 @@ gsap.registerPlugin(useGSAP);
 export const Hero: FC = () => {
 	const content = useIntlayer("home-hero");
 	const { locale } = useLocale();
+	const { home } = useCmsData();
+	const s = pickSection(home, "header", locale as Locale);
+	const heroTitle = (s?.title as string) || content.subtitle.value;
 
 	const [isReady, setIsReady] = useState(false);
 
@@ -271,7 +276,7 @@ export const Hero: FC = () => {
 
 					{/* Subtitle */}
 					<p className="mt-6 max-w-xl text-sm leading-relaxed font-light text-white/75 sm:text-base">
-						{content.subtitle.value}
+						{heroTitle}
 					</p>
 
 					{/* CTA Link */}
