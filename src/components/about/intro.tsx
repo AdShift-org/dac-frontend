@@ -24,7 +24,12 @@ export const Intro: FC = () => {
 			gsap.set(q(".ab-in-head"), { opacity: 0, y: 30 });
 			gsap.set(q(".ab-in-text"), { opacity: 0, y: 25 });
 			gsap.set(q(".ab-in-badges > div"), { opacity: 0, scale: 0.9 });
-			gsap.set(q(".ab-in-card"), { y: 80, rotationX: 10, transformOrigin: "50% 100%" });
+			gsap.set(q(".ab-in-card"), {
+				opacity: 0,
+				y: 80,
+				rotationX: 10,
+				transformOrigin: "50% 100%"
+			});
 
 			const tl = gsap.timeline({
 				scrollTrigger: {
@@ -43,7 +48,11 @@ export const Intro: FC = () => {
 					{ opacity: 1, scale: 1, duration: 0.6, stagger: 0.1 },
 					"-=0.4"
 				)
-				.to(q(".ab-in-card"), { y: 0, rotationX: 0, duration: 0.9, stagger: 0.15 }, "-=0.3");
+				.to(
+					q(".ab-in-card"),
+					{ y: 0, rotationX: 0, duration: 0.9, stagger: 0.15, opacity: 1 },
+					"-=0.3"
+				);
 		},
 		{ scope: sectionRef, dependencies: [locale] }
 	);

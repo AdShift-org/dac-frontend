@@ -18,6 +18,7 @@ export const Stats: FC = () => {
 			const q = gsap.utils.selector(sectionRef);
 
 			gsap.set(q(".ab-st-head"), { opacity: 0, y: 20 });
+			gsap.set(q(".ab-st-item"), { opacity: 0 });
 
 			const tl = gsap.timeline({
 				scrollTrigger: {
@@ -28,7 +29,11 @@ export const Stats: FC = () => {
 				defaults: { ease: "power3.out" }
 			});
 
-			tl.to(q(".ab-st-head"), { opacity: 1, y: 0, duration: 0.8 });
+			tl.to(q(".ab-st-head"), { opacity: 1, y: 0, duration: 0.8 }).to(
+				q(".ab-st-item"),
+				{ opacity: 1, duration: 0.8, stagger: 0.15 },
+				"-=0.4"
+			);
 
 			// Count each figure up from zero on reveal
 			sectionRef.current!.querySelectorAll<HTMLElement>(".ab-st-num").forEach((el) => {

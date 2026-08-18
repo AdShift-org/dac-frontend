@@ -20,22 +20,22 @@ export const Pillars: FC = () => {
 		() => {
 			const q = gsap.utils.selector(sectionRef);
 
-			gsap.set(q(".ab-pl-card"), { clipPath: "inset(100% 0 0 0)" });
+			gsap.set(q(".ab-pl-card"), { scaleY: 0, transformOrigin: "top center" });
 
-			gsap.to(
-				q(".ab-pl-card"),
-				{
-					clipPath: "inset(0 0 0 0)",
-					duration: 0.9,
-					stagger: 0.18,
-					ease: "power3.inOut",
-					scrollTrigger: {
-						trigger: sectionRef.current,
-						start: "top 85%",
-						once: true
-					}
-				}
-			);
+			const tl = gsap.timeline({
+				scrollTrigger: {
+					trigger: sectionRef.current,
+					start: "top 85%",
+					// once: true
+				},
+				defaults: { ease: "power3.inOut" }
+			});
+
+			tl.to(q(".ab-pl-card"), {
+				scaleY: 1,
+				duration: 0.9,
+				stagger: 0.18
+			});
 		},
 		{ scope: sectionRef, dependencies: [locale] }
 	);

@@ -18,7 +18,7 @@ export const Process: FC = () => {
 			const q = gsap.utils.selector(sectionRef);
 
 			gsap.set(q(".ab-pc-head"), { opacity: 0, y: 30 });
-			gsap.set(q(".ab-pc-step"), { y: 45 });
+			gsap.set(q(".ab-pc-step"), { y: 45, opacity: 0 });
 
 			const tl = gsap.timeline({
 				scrollTrigger: {
@@ -52,6 +52,7 @@ export const Process: FC = () => {
 				q(".ab-pc-step"),
 				{
 					y: 0,
+					opacity: 1,
 					duration: 0.6,
 					stagger: 0.15,
 					scrollTrigger: {

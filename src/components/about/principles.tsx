@@ -18,7 +18,7 @@ export const Principles: FC = () => {
 			const q = gsap.utils.selector(sectionRef);
 
 			gsap.set(q(".ab-pr-head"), { opacity: 0, y: 30 });
-			gsap.set(q(".ab-pr-item"), { x: (i) => (i % 2 === 0 ? -56 : 56) });
+			gsap.set(q(".ab-pr-item"), { x: (i) => (i % 2 === 0 ? -56 : 56), opacity: 0 });
 
 			const tl = gsap.timeline({
 				scrollTrigger: {
@@ -31,7 +31,7 @@ export const Principles: FC = () => {
 
 			tl.to(q(".ab-pr-head"), { opacity: 1, y: 0, duration: 0.9 }).to(
 				q(".ab-pr-item"),
-				{ x: 0, duration: 0.8, stagger: 0.14 },
+				{ x: 0, opacity: 1, duration: 0.8, stagger: 0.14 },
 				"-=0.4"
 			);
 		},
