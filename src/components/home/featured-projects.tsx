@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef, type FC } from "react";
+import { useLayoutEffect, useMemo, useRef, useState, type FC } from "react";
 
 import { useIntlayer, useLocale } from "react-intlayer";
 
@@ -40,7 +40,8 @@ export const FeaturedProjects: FC = () => {
 		}
 
 		return api.map((raw) => {
-			const p = (locale === "ar" ? raw.ar : raw.en) as {
+			const useAr = locale === "ar";
+			const p = (useAr ? raw.ar : raw.en) as {
 				slug: string;
 				name?: string;
 				title?: string | null;
@@ -48,12 +49,25 @@ export const FeaturedProjects: FC = () => {
 				delivery_year?: number | null;
 				service?: { en: { name: string }; ar: { name: string } } | null;
 			};
+			const en = raw.en as {
+				name?: string;
+				title?: string | null;
+				location?: string | null;
+				delivery_year?: number | null;
+				service?: { en: { name: string }; ar: { name: string } } | null;
+			};
+			// ponytail: API Arabic fields are empty — fall back to English per field
+			const svc = useAr
+				? (p.service?.ar?.name || p.service?.en?.name || "")
+				: (en.service?.en?.name || "");
 			return {
 				slug: p.slug,
-				name: (p.name ?? p.title) || "",
-				location: p.location ?? "",
-				category: p.service ? (locale === "ar" ? p.service.ar.name : p.service.en.name) : "",
-				year: p.delivery_year ? String(p.delivery_year) : "2026"
+				name: (p.name ?? p.title ?? en.name ?? en.title) || "",
+				location: p.location || en.location || "",
+				category: svc,
+				year: (p.delivery_year ?? en.delivery_year)
+					? String(p.delivery_year ?? en.delivery_year)
+					: "2026"
 			};
 		});
 	}, [projectsData, locale, content]);
@@ -61,6 +75,47 @@ export const FeaturedProjects: FC = () => {
 	const sectionRef = useRef<HTMLElement>(null);
 	const trackRef = useRef<HTMLDivElement>(null);
 	const innerRef = useRef<HTMLDivElement>(null);
+	const sliderRef = useRef<HTMLDivElement>(null);
+	const tlRef = useRef<gsap.core.Timeline | null>(null);
+	const draggingRef = useRef(false);
+	const [progress, setProgress] = useState(0);
+
+	const isRtl = locale === "ar";
+
+	const jumpToProgress = (p: number) => {
+		const st = tlRef.current?.scrollTrigger;
+		if (!st) return;
+		st.scroll(st.start + p * (st.end - st.start));
+	};
+
+	const scrubTo = (clientX: number) => {
+		const el = sliderRef.current;
+		if (!el) return;
+		const rect = el.getBoundingClientRect();
+		const x = rect.width ? (clientX - rect.left) / rect.width : 0;
+		const p = Math.min(1, Math.max(0, isRtl ? 1 - x : x));
+		jumpToProgress(p);
+	};
+
+	const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+		draggingRef.current = true;
+		e.currentTarget.setPointerCapture(e.pointerId);
+		scrubTo(e.clientX);
+	};
+	const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+		if (draggingRef.current) scrubTo(e.clientX);
+	};
+	const onPointerUp = () => {
+		draggingRef.current = false;
+	};
+	const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		if (projects.length <= 1) return;
+		const step = 1 / (projects.length - 1);
+		if (e.key === "ArrowRight")
+			jumpToProgress(Math.min(1, progress + (isRtl ? -step : step)));
+		else if (e.key === "ArrowLeft")
+			jumpToProgress(Math.max(0, progress - (isRtl ? -step : step)));
+	};
 
 	// ponytail: must be useLayoutEffect — passive useEffect cleanup runs AFTER React
 	// removes the pinned <section> from the DOM, so GSAP's pin-spacer is still wrapping
@@ -72,7 +127,7 @@ export const FeaturedProjects: FC = () => {
 		const inner = innerRef.current;
 		if (!section || !track || !inner) return;
 
-		const isRtl = document.documentElement.dir === "rtl";
+		const isRtl = locale === "ar";
 
 		const getAmount = () => Math.max(track.scrollWidth - track.clientWidth, 0);
 
@@ -88,9 +143,13 @@ export const FeaturedProjects: FC = () => {
 				pin: true,
 				scrub: 1,
 				anticipatePin: 1,
-				invalidateOnRefresh: true
+				invalidateOnRefresh: true,
+				onUpdate: (self) => {
+					setProgress(self.progress);
+				}
 			}
 		});
+		tlRef.current = tl;
 
 		// ponytail: native scrollLeft lets the browser resolve RTL direction
 		tl.fromTo(
@@ -119,7 +178,7 @@ export const FeaturedProjects: FC = () => {
 			tl.scrollTrigger?.kill();
 			tl.kill();
 		};
-	}, []);
+	}, [locale]);
 
 	return (
 		<section
@@ -214,6 +273,35 @@ export const FeaturedProjects: FC = () => {
 					<ArrowRight className="size-4 transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
 				</a>
 			</div>
+
+			{/* Horizontal scrubbable slider to jump between projects */}
+			{projects.length > 1 && (
+				<div
+					ref={sliderRef}
+					role="slider"
+					aria-label="Projects"
+					aria-valuemin={0}
+					aria-valuemax={100}
+					aria-valuenow={Math.round(progress * 100)}
+					aria-valuetext={`${Math.round(progress * 100)}%`}
+					tabIndex={0}
+					onPointerDown={onPointerDown}
+					onPointerMove={onPointerMove}
+					onPointerUp={onPointerUp}
+					onKeyDown={onKeyDown}
+					className="group absolute inset-x-0 bottom-0 z-20 h-6 cursor-pointer touch-none select-none"
+				>
+					<div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-white/15" />
+					<div
+						className="absolute top-1/2 h-px -translate-y-1/2 bg-accent"
+						style={{ width: `${progress * 100}%`, [isRtl ? "right" : "left"]: 0 }}
+					/>
+					<div
+						className="absolute top-1/2 size-3 -translate-y-1/2 rounded-full bg-accent shadow-lg"
+						style={{ [isRtl ? "right" : "left"]: `calc(${progress * 100}% - 6px)` }}
+					/>
+				</div>
+			)}
 		</section>
 	);
 };

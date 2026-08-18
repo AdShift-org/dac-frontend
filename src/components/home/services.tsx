@@ -21,8 +21,10 @@ export const Services: FC = () => {
 	const serviceNames =
 		(services ?? []).length > 0
 			? services!.map((raw) => {
-					const name = (locale === "ar" ? raw.ar.name_ar : raw.en.name) || "";
-					return name;
+					// ponytail: API Arabic name is empty — fall back to English.
+					// ar is normalized by unfoldAr at the loader, so name_ar surfaces as `name`.
+					const arName = (raw.ar as { name?: string }).name || "";
+					return arName || raw.en.name || "";
 				})
 			: content.services.map((s) => s.value);
 
