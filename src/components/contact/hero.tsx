@@ -5,11 +5,16 @@ import { useIntlayer, useLocale } from "react-intlayer";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
+
 import heroImg from "#/assets/contact/hero.png";
 
 export const Hero: FC = () => {
 	const content = useIntlayer("contact-hero");
 	const { locale } = useLocale();
+	const { contact } = useCmsData();
+	const s = pickSection(contact, "header_section", locale as Locale);
+	const str = (key: string, fallback: string) => (s?.[key] as string) || fallback;
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	useGSAP(
@@ -86,18 +91,20 @@ export const Hero: FC = () => {
 				<div className="max-w-3xl">
 					{/* Tag / Indicator */}
 					<div className="cnt-hero-tag mb-6 font-sans text-xs font-semibold tracking-widest text-neutral-400">
-						{content.tag.value}
+						{str("tag", content.tag.value)}
 					</div>
 
 					{/* Hero Headline */}
 					<h1 className="cnt-hero-title font-sans text-4xl leading-[1.08] font-extrabold tracking-tight text-white uppercase sm:text-6xl md:text-7xl lg:text-7xl">
-						<span className="block">{content.titleLine1.value}</span>
-						<span className="block text-white/95">{content.titleLine2.value}</span>
+						<span className="block">{str("title", content.titleLine1.value)}</span>
+						<span className="block text-white/95">
+							{str("header_title", content.titleLine2.value)}
+						</span>
 					</h1>
 
 					{/* Description */}
 					<p className="cnt-hero-desc mt-8 max-w-xl text-sm leading-relaxed font-light text-neutral-300 sm:text-base md:text-lg">
-						{content.description.value}
+						{str("description", content.description.value)}
 					</p>
 				</div>
 			</div>

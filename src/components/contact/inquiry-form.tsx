@@ -2,7 +2,9 @@ import { useState, type FC } from "react";
 
 import { useForm } from "@tanstack/react-form";
 
-import { useIntlayer } from "react-intlayer";
+import { useIntlayer, useLocale } from "react-intlayer";
+
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
 
 import { ArrowRight, CheckCircle2, ChevronDown } from "lucide-react";
 
@@ -18,6 +20,10 @@ interface ContactInquiryData {
 
 export const InquiryForm: FC = () => {
 	const content = useIntlayer("contact-inquiry");
+	const { locale } = useLocale();
+	const { contact } = useCmsData();
+	const s = pickSection(contact, "contact_section", locale as Locale);
+	const str = (key: string, fallback: string) => (s?.[key] as string) || fallback;
 	const [isSubmitted, setIsSubmitted] = useState(false);
 
 	const form = useForm<ContactInquiryData>({
@@ -48,11 +54,11 @@ export const InquiryForm: FC = () => {
 						<div className="mb-6 h-[2px] w-12 bg-[#cbb28d]" />
 
 						<h2 className="font-serif text-4xl font-normal tracking-tight text-neutral-900 sm:text-5xl">
-							{content.sectionTitle.value}
+							{str("title", content.sectionTitle.value)}
 						</h2>
 
 						<p className="mt-6 max-w-md text-sm leading-relaxed font-light text-neutral-600 sm:text-base">
-							{content.sectionDesc.value}
+							{str("description", content.sectionDesc.value)}
 						</p>
 					</div>
 

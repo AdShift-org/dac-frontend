@@ -1,16 +1,95 @@
 import { useState, type FC } from "react";
 
-import { useIntlayer } from "react-intlayer";
+import { useIntlayer, useLocale } from "react-intlayer";
+
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
 
 import { cn } from "@/lib/utils";
 
 import { Mail, MapPin, Phone } from "lucide-react";
 
+type OfficeData = {
+	id: string;
+	tab: string;
+	title: string;
+	addressTitle: string;
+	addressDetail: string;
+	phone: string;
+	email: string;
+	hours: { days: string; time: string }[];
+};
+
 export const Offices: FC = () => {
 	const content = useIntlayer("contact-offices");
-	const [activeTab, setActiveTab] = useState<"cairo" | "dubai">("cairo");
+	const { locale } = useLocale();
+	const { contact } = useCmsData();
+	const s = pickSection(contact, "offices", locale as Locale);
 
-	const currentOffice = activeTab === "cairo" ? content.cairo : content.dubai;
+	const apiOffices = s?.offices;
+	const hasApi = Array.isArray(apiOffices) && apiOffices.length > 0;
+
+	const offices: OfficeData[] = hasApi
+		? (apiOffices as unknown[]).map((entry, index) => {
+				const o = (entry as Record<string, unknown>)?.[locale] as Record<
+					string,
+					unknown
+				> | undefined;
+				const hours = Array.isArray(o?.office_hours)
+					? (
+							o.office_hours as {
+								en?: { days: string; hours: string };
+								ar?: { days: string; hours: string };
+							}[]
+						).map((h) => {
+							const hh = h?.[locale];
+							return {
+								days: hh?.days ?? "",
+								time: hh?.hours ?? ""
+							};
+						})
+					: [];
+				return {
+					id: String(o?.id ?? index),
+					tab: (o?.branch as string) ?? "",
+					title: (o?.branch as string) ?? "",
+					addressTitle: (o?.city as string) ?? "",
+					addressDetail: (o?.address as string) ?? "",
+					phone: (o?.phone as string) ?? "",
+					email: (o?.email as string) ?? "",
+					hours
+				};
+			})
+		: [
+				{
+					id: "cairo",
+					tab: content.cairoTab.value,
+					title: content.cairo.title.value,
+					addressTitle: content.cairo.addressTitle.value,
+					addressDetail: content.cairo.addressDetail.value,
+					phone: content.cairo.phoneDetail.value,
+					email: content.cairo.emailDetail.value,
+					hours: content.cairo.schedule.map((item) => ({
+						days: item.days.value,
+						time: item.time.value
+					}))
+				},
+				{
+					id: "dubai",
+					tab: content.dubaiTab.value,
+					title: content.dubai.title.value,
+					addressTitle: content.dubai.addressTitle.value,
+					addressDetail: content.dubai.addressDetail.value,
+					phone: content.dubai.phoneDetail.value,
+					email: content.dubai.emailDetail.value,
+					hours: content.dubai.schedule.map((item) => ({
+						days: item.days.value,
+						time: item.time.value
+					}))
+				}
+			];
+
+	const [activeIndex, setActiveIndex] = useState(0);
+	const current = offices[Math.min(activeIndex, offices.length - 1)];
 
 	return (
 		<section
@@ -21,35 +100,28 @@ export const Offices: FC = () => {
 				{/* Header with Title & City Switcher */}
 				<div className="flex flex-col items-start justify-between gap-6 border-b border-neutral-200 pb-6 sm:flex-row sm:items-center">
 					<h2 className="font-sans text-xl font-bold tracking-widest text-neutral-900 uppercase sm:text-2xl">
-						{content.sectionTitle.value}
+						{(s?.title as string) || content.sectionTitle.value}
 					</h2>
 
-					<div className="flex items-center gap-8">
-						<button
-							type="button"
-							onClick={() => setActiveTab("cairo")}
-							className={cn(
-								"cursor-pointer pb-2 font-sans text-xs font-semibold tracking-widest uppercase transition-colors",
-								activeTab === "cairo"
-									? "border-b-2 border-neutral-900 text-neutral-900"
-									: "text-neutral-400 hover:text-neutral-700"
-							)}
-						>
-							{content.cairoTab.value}
-						</button>
-						<button
-							type="button"
-							onClick={() => setActiveTab("dubai")}
-							className={cn(
-								"cursor-pointer pb-2 font-sans text-xs font-semibold tracking-widest uppercase transition-colors",
-								activeTab === "dubai"
-									? "border-b-2 border-neutral-900 text-neutral-900"
-									: "text-neutral-400 hover:text-neutral-700"
-							)}
-						>
-							{content.dubaiTab.value}
-						</button>
-					</div>
+					{offices.length > 1 && (
+						<div className="flex flex-wrap items-center gap-8">
+							{offices.map((office, index) => (
+								<button
+									key={office.id}
+									type="button"
+									onClick={() => setActiveIndex(index)}
+									className={cn(
+										"cursor-pointer pb-2 font-sans text-xs font-semibold tracking-widest uppercase transition-colors",
+										activeIndex === index
+											? "border-b-2 border-neutral-900 text-neutral-900"
+											: "text-neutral-400 hover:text-neutral-700"
+									)}
+								>
+									{office.tab}
+								</button>
+							))}
+						</div>
+					)}
 				</div>
 
 				{/* Office Info Grid */}
@@ -57,7 +129,7 @@ export const Offices: FC = () => {
 					{/* Left Column: Office Details */}
 					<div className="lg:col-span-7">
 						<h3 className="font-serif text-2xl font-medium tracking-tight text-[#1c2e42] sm:text-3xl">
-							{currentOffice.title.value}
+							{current.title}
 						</h3>
 
 						<div className="mt-8 flex flex-col gap-6">
@@ -68,10 +140,10 @@ export const Offices: FC = () => {
 								</div>
 								<div className="flex flex-col">
 									<span className="font-sans text-base font-bold text-neutral-900">
-										{currentOffice.addressTitle.value}
+										{current.addressTitle}
 									</span>
 									<span className="mt-0.5 text-sm text-neutral-600">
-										{currentOffice.addressDetail.value}
+										{current.addressDetail}
 									</span>
 								</div>
 							</div>
@@ -83,13 +155,13 @@ export const Offices: FC = () => {
 								</div>
 								<div className="flex flex-col">
 									<span className="font-sans text-base font-bold text-neutral-900">
-										{currentOffice.phoneTitle.value}
+										{content.cairo.phoneTitle.value}
 									</span>
 									<a
-										href={`tel:${currentOffice.phoneDetail.value}`}
+										href={`tel:${current.phone}`}
 										className="mt-0.5 text-sm text-neutral-600 transition-colors hover:text-neutral-900"
 									>
-										{currentOffice.phoneDetail.value}
+										{current.phone}
 									</a>
 								</div>
 							</div>
@@ -101,13 +173,13 @@ export const Offices: FC = () => {
 								</div>
 								<div className="flex flex-col">
 									<span className="font-sans text-base font-bold text-neutral-900">
-										{currentOffice.emailTitle.value}
+										{content.cairo.emailTitle.value}
 									</span>
 									<a
-										href={`mailto:${currentOffice.emailDetail.value}`}
+										href={`mailto:${current.email}`}
 										className="mt-0.5 text-sm text-neutral-600 transition-colors hover:text-neutral-900"
 									>
-										{currentOffice.emailDetail.value}
+										{current.email}
 									</a>
 								</div>
 							</div>
@@ -118,18 +190,18 @@ export const Offices: FC = () => {
 					<div className="lg:col-span-5">
 						<div className="rounded-2xl bg-[#0d0d0d] p-8 text-white shadow-xl">
 							<h4 className="font-sans text-lg font-semibold text-[#e5c590]">
-								{currentOffice.hoursTitle.value}
+								{content.cairo.hoursTitle.value}
 							</h4>
 
 							<div className="mt-6 flex flex-col gap-4">
-								{currentOffice.schedule.map((item, index) => (
+								{current.hours.map((item, index) => (
 									<div
 										key={index}
 										className="flex items-center justify-between text-sm text-neutral-300"
 									>
-										<span className="font-light">{item.days.value}</span>
+										<span className="font-light">{item.days}</span>
 										<span className="font-sans text-xs tracking-wider text-white">
-											{item.time.value}
+											{item.time}
 										</span>
 									</div>
 								))}
