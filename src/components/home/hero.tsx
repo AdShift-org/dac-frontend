@@ -4,14 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import { getHTMLTextDir } from "intlayer";
 import { useIntlayer, useLocale } from "react-intlayer";
 
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
+
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ArrowDown, ArrowRight } from "lucide-react";
 
-import { useCmsData, pickSection, type Locale } from "@/lib/cms";
-
 import dacLogo from "#/assets/dac-logo-no-slogan.png";
-import heroImg from "#/assets/home/hero.png";
+import heroImgAsset from "#/assets/home/hero.png";
 
 gsap.registerPlugin(useGSAP);
 
@@ -21,6 +21,7 @@ export const Hero: FC = () => {
 	const { home } = useCmsData();
 	const s = pickSection(home, "header", locale as Locale);
 	const heroTitle = (s?.title as string) || content.subtitle.value;
+	const heroImg = s?.image || heroImgAsset;
 
 	const [isReady, setIsReady] = useState(false);
 
