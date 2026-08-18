@@ -4,25 +4,34 @@ import { useIntlayer, useLocale } from "react-intlayer";
 import { ArrowRight, Calendar } from "lucide-react";
 
 import { Link } from "@/components/localized-link";
-import { MEDIA_ARTICLES, type MediaCategory } from "./media-data";
+import { MEDIA_ARTICLES, type MediaArticle } from "./media-data";
 
-export const MediaList: FC = () => {
+import dacLogo from "#/assets/dac-logo.png";
+
+interface MediaListProps {
+	articles?: MediaArticle[];
+}
+
+export const MediaList: FC<MediaListProps> = ({ articles }) => {
 	const content = useIntlayer("media-list");
 	const { locale } = useLocale();
 	const isArabic = locale === "ar";
 
-	const [activeCategory, setActiveCategory] = useState<MediaCategory>("ALL");
+	const [activeCategory, setActiveCategory] = useState<string>("ALL");
 
-	const categories: { key: MediaCategory; label: string }[] = [
+	const list = (articles && articles.length ? articles : MEDIA_ARTICLES) as MediaArticle[];
+
+	const categories: { key: string; label: string }[] = [
 		{ key: "ALL", label: content.categories.all.value },
-		{ key: "PRESS RELEASES", label: content.categories.pressReleases.value },
-		{ key: "INSIGHTS", label: content.categories.insights.value },
-		{ key: "AWARDS", label: content.categories.awards.value }
+		...Array.from(new Set(list.map((a) => a.category).filter(Boolean))).map((category) => ({
+			key: category,
+			label: category
+		}))
 	];
 
-	const featuredArticle = MEDIA_ARTICLES[0];
+	const featuredArticle = list[0];
 
-	const filteredArticles = MEDIA_ARTICLES.filter((article) => {
+	const filteredArticles = list.filter((article) => {
 		if (activeCategory === "ALL") return true;
 		return article.category === activeCategory;
 	});
@@ -68,9 +77,13 @@ export const MediaList: FC = () => {
 							{/* Background Image */}
 							<div className="relative aspect-[16/9] w-full overflow-hidden md:aspect-[21/9]">
 								<img
-									src={featuredArticle.coverImage}
+									src={featuredArticle.coverImage || dacLogo}
 									alt={isArabic ? featuredArticle.title.ar : featuredArticle.title.en}
-									className="size-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+									className={
+										featuredArticle.coverImage
+											? "size-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+											: "mx-auto size-1/2 object-contain opacity-40"
+									}
 								/>
 								<div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
 							</div>
@@ -132,9 +145,13 @@ export const MediaList: FC = () => {
 									{/* Article Image Card */}
 									<div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-neutral-200">
 										<img
-											src={article.coverImage}
+											src={article.coverImage || dacLogo}
 											alt={title}
-											className="size-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+											className={
+												article.coverImage
+													? "size-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+													: "mx-auto size-1/2 object-contain opacity-40"
+											}
 										/>
 									</div>
 

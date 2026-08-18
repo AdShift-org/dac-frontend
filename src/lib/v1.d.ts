@@ -110,6 +110,44 @@ export interface components {
 				description_ar: string | null;
 			};
 		};
+		MediaItemContent: {
+			en: {
+				id: number;
+				image: string | null;
+				title: string | null;
+				text: string | null;
+			};
+			ar: {
+				id: number;
+				image: string | null;
+				title_ar: string | null;
+				text_ar: string | null;
+			};
+		};
+		MediaItem: {
+			en: {
+				id: number;
+				publish_date: string | null;
+				reading_time: number | null;
+				image: string | null;
+				contents: components["schemas"]["MediaItemContent"][];
+				created_at: string | null;
+				updated_at: string | null;
+				title: string;
+				category: string | null;
+			};
+			ar: {
+				id: number;
+				publish_date: string | null;
+				reading_time: number | null;
+				image: string | null;
+				contents: components["schemas"]["MediaItemContent"][];
+				created_at: string | null;
+				updated_at: string | null;
+				title_ar: string;
+				category_ar: string | null;
+			};
+		};
 	};
 }
 
@@ -170,6 +208,37 @@ export interface paths {
 					content: {
 						"application/json": {
 							data: components["schemas"]["Project"];
+						};
+					};
+				};
+			};
+		};
+	};
+	"/api/media-items": {
+		get: {
+			responses: {
+				200: {
+					content: {
+						"application/json": {
+							data: components["schemas"]["MediaItem"][];
+						};
+					};
+				};
+			};
+		};
+	};
+	"/api/media-items/{mediaItem}": {
+		get: {
+			parameters: {
+				path: {
+					mediaItem: number;
+				};
+			};
+			responses: {
+				200: {
+					content: {
+						"application/json": {
+							data: components["schemas"]["MediaItem"];
 						};
 					};
 				};

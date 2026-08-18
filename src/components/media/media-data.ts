@@ -1,9 +1,9 @@
-export type MediaCategory = "ALL" | "PRESS RELEASES" | "INSIGHTS" | "AWARDS";
+export type MediaCategory = "ALL" | string;
 
 export interface MediaArticle {
 	id: string;
 	slug: string;
-	category: "PRESS RELEASES" | "INSIGHTS" | "AWARDS";
+	category: string;
 	categoryLabel: {
 		en: string;
 		ar: string;
@@ -532,4 +532,72 @@ export function getMediaArticleById(id: string): MediaArticle | undefined {
 	return MEDIA_ARTICLES.find(
 		(article) => article.id.toLowerCase() === id.toLowerCase() || article.slug.toLowerCase() === id.toLowerCase()
 	);
+}
+
+type ApiMediaContent = {
+	en: { id: number; title: string | null; text: string | null };
+	ar: { id: number; title_ar: string | null; text_ar: string | null };
+};
+
+type ApiMediaItem = {
+	en: {
+		id: number;
+		publish_date: string | null;
+		reading_time: number | null;
+		image: string | null;
+		contents: ApiMediaContent[];
+		title: string;
+		category: string | null;
+	};
+	ar: {
+		id: number;
+		publish_date: string | null;
+		reading_time: number | null;
+		image: string | null;
+		contents: ApiMediaContent[];
+		title_ar: string;
+		category_ar: string | null;
+	};
+};
+
+export function fromApiItems(items: ApiMediaItem[]): MediaArticle[] {
+	return items.map((item) => {
+		const en = item.en;
+		const ar = item.ar;
+		const id = String(en.id);
+		const category = (en.category ?? "").toUpperCase() as MediaArticle["category"];
+
+		return {
+			id,
+			slug: id,
+			category,
+			categoryLabel: { en: en.category ?? "", ar: ar.category_ar ?? "" },
+			categoryTag: { en: en.category ?? "", ar: ar.category_ar ?? "" },
+			date: en.publish_date ?? "",
+			dateAr: ar.publish_date ?? "",
+			readTime: {
+				en: en.reading_time ? `${en.reading_time} MIN` : "",
+				ar: ar.reading_time ? `${ar.reading_time} دقائق` : ""
+			},
+			title: { en: en.title, ar: ar.title_ar },
+			excerpt: {
+				en: en.contents?.[0]?.en.text ?? "",
+				ar: ar.contents?.[0]?.ar.text_ar ?? ""
+			},
+			coverImage: en.image ?? "",
+			sections: (en.contents ?? []).map((content, index) => ({
+				id: String(content.en.id ?? index),
+				title: {
+					en: content.en.title ?? "",
+					ar: ar.contents?.[index]?.ar.title_ar ?? ""
+				},
+				content: {
+					en: content.en.text ? [content.en.text] : [],
+					ar: ar.contents?.[index]?.ar.text_ar
+						? [ar.contents[index].ar.text_ar!]
+						: []
+				}
+			}))
+		};
+	});
 }

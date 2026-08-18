@@ -8,18 +8,18 @@ import { Link } from "@/components/localized-link";
 // import { ArrowLeft, ArrowRight, Quote } from "lucide-react";
 import { ArrowLeft, Quote } from "lucide-react";
 
-import { getMediaArticleById, type MediaArticle } from "./media-data";
+import { type MediaArticle } from "./media-data";
+
+import dacLogo from "#/assets/dac-logo.png";
 
 interface ArticleDetailProps {
-	articleId: string;
+	article?: MediaArticle;
 }
 
-export const ArticleDetail: FC<ArticleDetailProps> = ({ articleId }) => {
+export const ArticleDetail: FC<ArticleDetailProps> = ({ article }) => {
 	const content = useIntlayer("article-detail");
 	const { locale } = useLocale();
 	const isArabic = locale === "ar";
-
-	const article: MediaArticle | undefined = getMediaArticleById(articleId);
 
 	const [activeSection, setActiveSection] = useState<string>(article?.sections[0]?.id ?? "");
 
@@ -95,9 +95,13 @@ export const ArticleDetail: FC<ArticleDetailProps> = ({ articleId }) => {
 				{/* Hero Image */}
 				<div className="mt-10 overflow-hidden bg-neutral-100 shadow-sm">
 					<img
-						src={article.coverImage}
+						src={article.coverImage || dacLogo}
 						alt={title}
-						className="aspect-video w-full object-cover object-center md:aspect-21/9"
+						className={
+							article.coverImage
+								? "aspect-video w-full object-cover object-center md:aspect-21/9"
+								: "mx-auto h-64 w-auto object-contain opacity-40"
+						}
 					/>
 				</div>
 			</section>
