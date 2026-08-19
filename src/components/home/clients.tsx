@@ -207,7 +207,10 @@ export const Clients: FC = () => {
 
 	const groups = (() => {
 		const countries = s?.client_countries as
-			| { en?: { country?: string; clients?: string[] }; ar?: { country?: string; clients?: string[] } }[]
+			| {
+					en?: { country?: string; clients?: string[] };
+					ar?: { country?: string; clients?: string[] };
+			  }[]
 			| undefined;
 		if (countries?.length) {
 			return countries.map((country) => {
@@ -224,8 +227,6 @@ export const Clients: FC = () => {
 			{ title: content.uaeTitle.value, items: fallbackLogos }
 		];
 	})();
-
-	console.log(groups);
 
 	return (
 		<section className="border-b border-border bg-background py-16 text-foreground sm:py-24">
