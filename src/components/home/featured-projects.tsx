@@ -35,6 +35,7 @@ export const FeaturedProjects: FC = () => {
 				name: p.name.value,
 				location: p.location.value,
 				category: p.category?.value ?? p.location.value,
+				image: undefined,
 				year: p.year ?? "2026"
 			}));
 		}
@@ -48,6 +49,7 @@ export const FeaturedProjects: FC = () => {
 				location?: string | null;
 				delivery_year?: number | null;
 				service?: { en: { name: string }; ar: { name: string } } | null;
+				images?: string[];
 			};
 			const en = raw.en as {
 				name?: string;
@@ -55,6 +57,7 @@ export const FeaturedProjects: FC = () => {
 				location?: string | null;
 				delivery_year?: number | null;
 				service?: { en: { name: string }; ar: { name: string } } | null;
+				images?: string[];
 			};
 			// ponytail: API Arabic fields are empty — fall back to English per field
 			const svc = useAr
@@ -65,6 +68,7 @@ export const FeaturedProjects: FC = () => {
 				name: (p.name || p.title || en.name || en.title) || "",
 				location: (p.location || en.location) || "",
 				category: svc,
+				image: p.images?.[0] || en.images?.[0] || undefined,
 				year: (p.delivery_year ?? en.delivery_year)
 					? String(p.delivery_year ?? en.delivery_year)
 					: "2026"
@@ -219,7 +223,7 @@ export const FeaturedProjects: FC = () => {
 							<div
 								className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105"
 								style={{
-									backgroundImage: `url('${images[index % images.length]}')`
+									backgroundImage: `url('${project.image ?? images[index % images.length]}')`
 								}}
 							/>
 
