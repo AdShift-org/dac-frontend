@@ -1,10 +1,10 @@
 import { useRef, type FC } from "react";
 
-import { useGSAP } from "@gsap/react";
 import { useIntlayer, useLocale } from "react-intlayer";
 
 import { useCmsData, pickSection, type Locale } from "@/lib/cms";
 
+import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight, Plus } from "lucide-react";
@@ -23,7 +23,7 @@ export const Services: FC = () => {
 			? services!.map((raw) => {
 					// ponytail: API Arabic name is empty — fall back to English.
 					// ar is normalized by unfoldAr at the loader, so name_ar surfaces as `name`.
-					const arName = (raw.ar as { name?: string }).name || "";
+					const arName = (raw?.[locale] as { name?: string }).name || "";
 					return arName || raw.en.name || "";
 				})
 			: content.services.map((s) => s.value);
@@ -55,13 +55,26 @@ export const Services: FC = () => {
 				// Heading lines unmask top-to-bottom
 				.to(
 					q(".sv-head span"),
-					{ clipPath: "inset(0 0 0% 0)", duration: 0.9, stagger: 0.14, ease: "power4.out" },
+					{
+						clipPath: "inset(0 0 0% 0)",
+						duration: 0.9,
+						stagger: 0.14,
+						ease: "power4.out"
+					},
 					"-=0.5"
 				)
 				// Intro + CTA drift up
-				.to(q(".sv-intro"), { opacity: 1, y: 0, duration: 0.9, ease: "power2.out" }, "-=0.5")
+				.to(
+					q(".sv-intro"),
+					{ opacity: 1, y: 0, duration: 0.9, ease: "power2.out" },
+					"-=0.5"
+				)
 				// Service rows swing in with a skew
-				.to(q(".sv-row"), { opacity: 1, x: 0, skewX: 0, duration: 0.8, stagger: 0.12 }, "-=0.3")
+				.to(
+					q(".sv-row"),
+					{ opacity: 1, x: 0, skewX: 0, duration: 0.8, stagger: 0.12 },
+					"-=0.3"
+				)
 				// Plus circles spin into place
 				.to(
 					q(".sv-plus"),
