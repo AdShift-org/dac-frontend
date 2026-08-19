@@ -8,6 +8,7 @@ import { useCmsData, pickSection, type Locale } from "@/lib/cms";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
+import dacLogo from "#/assets/dac-logo.png";
 import emiratiPartner from "#/assets/home/leadership/emirati-partner.png";
 import ceo from "#/assets/home/leadership/ceo.png";
 import generalManager from "#/assets/home/leadership/general-manager.png";
@@ -26,12 +27,13 @@ export const Leadership: FC = () => {
 
 	const members = useMemo(() => {
 		const api = (s?.members as Array<Record<string, unknown>> | undefined) ?? [];
-		if (!api.length) return content.members;
+		if (!api.length) return content.members.map((m, i) => ({ ...m, image: images[i] }));
 		return api.map((m) => {
-			const loc = (locale === "ar" ? m.ar : m.en) as { name?: string; title?: string };
+			const loc = (locale === "ar" ? m.ar : m.en) as { name?: string; title?: string; image?: string };
 			return {
 				name: { value: loc.name || "" },
-				role: { value: loc.title || "" }
+				role: { value: loc.title || "" },
+				image: loc.image || dacLogo
 			};
 		});
 	}, [s, content, locale]);
@@ -98,17 +100,21 @@ export const Leadership: FC = () => {
 					</div>
 
 					<div className="ld-grid mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-						{members.map((member, index) => (
+						{members.map((member) => (
 							<div
-								key={index}
+								key={member.image}
 								className="ld-card group relative aspect-[3/4] overflow-hidden rounded-sm bg-neutral-900 shadow-xl"
 							>
 								<div
-									className="ld-img absolute inset-0 bg-cover bg-center contrast-125 grayscale transition-transform duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
-									style={{
-										backgroundImage: `url('${images[index]}')`
-									}}
-								/>
+								className={`ld-img absolute inset-0 bg-cover bg-center contrast-125 grayscale transition-transform duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0 ${
+									member.image === dacLogo ? "flex items-center justify-center opacity-30" : ""
+								}`}
+								style={member.image === dacLogo ? undefined : { backgroundImage: `url('${member.image}')` }}
+							>
+								{member.image === dacLogo && (
+									<img src={dacLogo} alt={member.name.value} className="size-1/2 object-contain" />
+								)}
+							</div>
 								<div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent" />
 
 								<div className="ld-nameplate absolute inset-x-0 bottom-0 p-6">
