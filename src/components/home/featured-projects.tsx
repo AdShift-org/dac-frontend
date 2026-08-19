@@ -62,8 +62,8 @@ export const FeaturedProjects: FC = () => {
 				: (en.service?.en?.name || "");
 			return {
 				slug: p.slug,
-				name: (p.name ?? p.title ?? en.name ?? en.title) || "",
-				location: p.location || en.location || "",
+				name: (p.name || p.title || en.name || en.title) || "",
+				location: (p.location || en.location) || "",
 				category: svc,
 				year: (p.delivery_year ?? en.delivery_year)
 					? String(p.delivery_year ?? en.delivery_year)
