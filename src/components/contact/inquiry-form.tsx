@@ -22,8 +22,11 @@ export const InquiryForm: FC = () => {
 	const content = useIntlayer("contact-inquiry");
 	const { locale } = useLocale();
 	const { contact } = useCmsData();
-	const s = pickSection(contact, "contact_section", locale as Locale);
+	const s = pickSection(contact, "inquiry_section", locale as Locale);
+	const contactInfo = pickSection(contact, "contact_section", locale as Locale);
 	const str = (key: string, fallback: string) => (s?.[key] as string) || fallback;
+	const contactStr = (key: string, fallback: string) =>
+		(contactInfo?.[key] as string) || fallback;
 	const [isSubmitted, setIsSubmitted] = useState(false);
 
 	const form = useForm<ContactInquiryData>({
@@ -60,6 +63,23 @@ export const InquiryForm: FC = () => {
 						<p className="mt-6 max-w-md text-sm leading-relaxed font-light text-neutral-600 sm:text-base">
 							{str("description", content.sectionDesc.value)}
 						</p>
+
+						{contactInfo && (contactInfo.email || contactInfo.phone) && (
+							<div className="mt-8 flex flex-col gap-2 text-sm text-neutral-600">
+								<a
+									href={`mailto:${contactStr("email", "")}`}
+									className="w-fit font-medium text-neutral-800 underline decoration-[#cbb28d] underline-offset-4 hover:text-neutral-900"
+								>
+									{contactStr("email", "")}
+								</a>
+								<a
+									href={`tel:${contactStr("phone", "")}`}
+									className="w-fit font-medium text-neutral-800 underline decoration-[#cbb28d] underline-offset-4 hover:text-neutral-900"
+								>
+									{contactStr("phone", "")}
+								</a>
+							</div>
+						)}
 					</div>
 
 					{/* Right Column: Inquiry Form */}
