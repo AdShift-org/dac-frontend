@@ -206,7 +206,7 @@ export const MEDIA_ARTICLES: MediaArticle[] = [
 			}
 		},
 		figure: {
-			image: "https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?w=1200&auto=format&fit=crop&q=80",
+			image: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1200&auto=format&fit=crop&q=80",
 			figNum: {
 				en: "FIG 01",
 				ar: "شكل ٠١"
