@@ -3,7 +3,6 @@ import { useState, type FC } from "react";
 import { useIntlayer, useLocale } from "react-intlayer";
 
 import { useCmsData, pickSection, type Locale } from "@/lib/cms";
-
 import { cn } from "@/lib/utils";
 
 import { Mail, MapPin, Phone } from "lucide-react";
@@ -30,10 +29,9 @@ export const Offices: FC = () => {
 
 	const offices: OfficeData[] = hasApi
 		? (apiOffices as unknown[]).map((entry, index) => {
-				const o = (entry as Record<string, unknown>)?.[locale] as Record<
-					string,
-					unknown
-				> | undefined;
+				const o = (entry as Record<string, unknown>)?.[locale] as
+					| Record<string, unknown>
+					| undefined;
 				const hours = Array.isArray(o?.office_hours)
 					? (
 							o.office_hours as {
@@ -188,25 +186,27 @@ export const Offices: FC = () => {
 
 					{/* Right Column: Office Hours Card */}
 					<div className="lg:col-span-5">
-						<div className="rounded-2xl bg-[#0d0d0d] p-8 text-white shadow-xl">
-							<h4 className="font-sans text-lg font-semibold text-[#e5c590]">
-								{content.cairo.hoursTitle.value}
-							</h4>
+						{current.hours.length > 0 ? (
+							<div className="rounded-2xl bg-[#0d0d0d] p-8 text-white shadow-xl">
+								<h4 className="font-sans text-lg font-semibold text-[#e5c590]">
+									{content.cairo.hoursTitle.value}
+								</h4>
 
-							<div className="mt-6 flex flex-col gap-4">
-								{current.hours.map((item, index) => (
-									<div
-										key={index}
-										className="flex items-center justify-between text-sm text-neutral-300"
-									>
-										<span className="font-light">{item.days}</span>
-										<span className="font-sans text-xs tracking-wider text-white">
-											{item.time}
-										</span>
-									</div>
-								))}
+								<div className="mt-6 flex flex-col gap-4">
+									{current.hours.map((item, index) => (
+										<div
+											key={index}
+											className="flex items-center justify-between text-sm text-neutral-300"
+										>
+											<span className="font-light">{item.days}</span>
+											<span className="font-sans text-xs tracking-wider text-white">
+												{item.time}
+											</span>
+										</div>
+									))}
+								</div>
 							</div>
-						</div>
+						) : null}
 					</div>
 				</div>
 			</div>

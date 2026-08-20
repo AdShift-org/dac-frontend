@@ -15,6 +15,19 @@ export const ProjectsList: FC = () => {
 	const { locale } = useLocale();
 	const { projects } = useCmsData();
 
+	const isUseful = (v: string): boolean => {
+		const t = v.trim();
+		if (!t) return false;
+		if (/^[-—–]+$/.test(t)) return false;
+		if (/^(n\/?a|na|none|null|tbd|todo)$/i.test(t)) return false;
+		const core = t
+			.replace(/\s*(m²|m2|sq\.?\s*m|AED|USD|SAR|EGP)\s*$/i, "")
+			.replace(/[\s,.]/g, "")
+			.replace(/[0٠۰]/g, "")
+			.trim();
+		return core !== "";
+	};
+
 	// FILTERS DISABLED (ponytail: feature removed, keep for reference)
 	// const [statusFilter, setStatusFilter] = useState<string>("all");
 	// const [sectorFilter, setSectorFilter] = useState<string>("all");
@@ -116,11 +129,12 @@ export const ProjectsList: FC = () => {
 					units: { value: num(p.total_units) },
 					builtUp: { value: area(p.built_up_area) },
 					delivery: {
-						value: p.delivery_quarter && p.delivery_year
-							? `Q${p.delivery_quarter} ${p.delivery_year}`
-							: p.delivery_year
-								? String(p.delivery_year)
-								: ""
+						value:
+							p.delivery_quarter && p.delivery_year
+								? `Q${p.delivery_quarter} ${p.delivery_year}`
+								: p.delivery_year
+									? String(p.delivery_year)
+									: ""
 					},
 					owner: { value: p.owner ?? "" },
 					consultant: { value: p.consultant ?? "" },
@@ -307,138 +321,183 @@ export const ProjectsList: FC = () => {
 				{/* 2-Column Grid */}
 				{filteredItems.length > 0 ? (
 					<>
-					<div className="mt-14 grid grid-cols-1 gap-x-10 gap-y-16 lg:grid-cols-2">
-{pageItems.map((project) => (
-						<article key={project.id.value} className="group flex flex-col">
-							{/* Card Image */}
-							<div className="relative aspect-16/10 w-full overflow-hidden bg-neutral-900">
-								<div className="flex size-full items-center justify-center">
-									<img
-										src={project.image.value}
-										alt={project.title.value}
-										className={
-											project.image.value === dacLogo
-												? "mx-auto size-1/2 object-contain opacity-40"
-												: "size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-										}
-									/>
-								</div>
-								{/* Status badge */}
-								<div className="absolute top-4 right-4 flex items-center gap-1.5 rounded-full bg-black/75 px-3 py-1 text-[10px] font-semibold tracking-widest text-white uppercase backdrop-blur-xs">
-									<span className="size-1.5 rounded-full bg-emerald-400" />
-									<span>{project.badge.value}</span>
-								</div>
-							</div>
-
-							{/* Title & Year */}
-							<div className="mt-6 flex items-baseline justify-between gap-4">
-								<h3 className="font-serif text-2xl font-normal text-neutral-900 sm:text-3xl">
-									{project.title.value}
-								</h3>
-								<span className="shrink-0 font-serif text-3xl font-light text-neutral-400 sm:text-4xl">
-									{project.year.value}
-								</span>
-							</div>
-
-							{/* Sector / Location microline */}
-							<div className="mt-2 flex items-center gap-2 font-sans text-[11px] font-semibold tracking-[0.18em] text-neutral-500 uppercase">
-								{project.sector.value && <span>{project.sector.value}</span>}
-								{project.sector.value && project.location.value && (
-									<span aria-hidden className="text-neutral-300">
-										/
-									</span>
-								)}
-								{project.location.value && (
-									<span className="truncate">{project.location.value}</span>
-								)}
-							</div>
-
-							{/* Description */}
-							<p className="mt-4 font-sans text-xs leading-relaxed font-light text-neutral-600 sm:text-sm">
-								{project.description.value}
-							</p>
-
-							{/* Prominent data panel */}
-							<div className="mt-6 border border-neutral-300/80 bg-[#efeae0] p-5 sm:p-6">
-								<span className="block font-sans text-[10px] font-semibold tracking-[0.25em] text-neutral-500 uppercase">
-									{content.projectData.value}
-								</span>
-
-								<dl className="mt-4 divide-y divide-neutral-300/60 border-t border-neutral-300/70">
-									{[
-										{ label: content.metaLabels.units.value, value: project.units.value },
-										{ label: content.metaLabels.builtUp.value, value: project.builtUp.value },
-										{ label: content.metaLabels.area.value, value: project.area.value },
-										{ label: content.metaLabels.delivery.value, value: project.delivery.value },
-										{ label: content.metaLabels.owner.value, value: project.owner.value },
-										{ label: content.metaLabels.consultant.value, value: project.consultant.value },
-										{ label: content.metaLabels.contractor.value, value: project.contractor.value },
-										{ label: content.metaLabels.startingPrice.value, value: project.startingPrice.value },
-										{ label: content.metaLabels.contractValue.value, value: project.contractValue.value }
-									].filter((item) => item.value).map((item) => (
-										<div
-											key={item.label}
-											className="flex items-center justify-between gap-4 py-2.5 text-xs sm:text-sm"
-										>
-											<dt className="shrink-0 font-sans text-[11px] font-medium tracking-wider text-neutral-500 uppercase">
-												{item.label}
-											</dt>
-											<dd className="font-sans text-xs font-medium text-neutral-900 text-end sm:text-sm break-words">
-												{item.value}
-											</dd>
+						<div className="mt-14 grid grid-cols-1 gap-x-10 gap-y-16 lg:grid-cols-2">
+							{pageItems.map((project) => (
+								<article key={project.id.value} className="group flex flex-col">
+									{/* Card Image */}
+									<div className="relative aspect-16/10 w-full overflow-hidden bg-neutral-900">
+										<div className="flex size-full items-center justify-center">
+											<img
+												src={project.image.value}
+												alt={project.title.value}
+												className={
+													project.image.value === dacLogo
+														? "mx-auto size-1/2 object-contain opacity-40"
+														: "size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+												}
+											/>
 										</div>
-									))}
-								</dl>
-							</div>
-						</article>
-					))}
-					</div>
+										{/* Status badge */}
+										<div className="absolute top-4 right-4 flex items-center gap-1.5 bg-black/75 px-3 py-1 text-[10px] font-semibold tracking-widest text-white uppercase backdrop-blur-xs">
+											<span className="size-1.5 bg-emerald-400" />
+											<span>{project.badge.value}</span>
+										</div>
+									</div>
 
-					{/* Pagination */}
-					{totalPages > 1 && (
-						<nav
-							aria-label={content.filterLabels.paginationLabel.value}
-							className="mt-16 flex items-center justify-center gap-3 border-t border-neutral-300/70 pt-8"
-						>
-							<button
-								type="button"
-								disabled={activePage === 1}
-								onClick={() => setPage((p) => Math.max(1, p - 1))}
-								className="inline-flex items-center gap-1.5 font-sans text-xs font-medium text-neutral-500 transition-colors hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-40"
+									{/* Title & Year */}
+									<div className="mt-6 flex items-baseline justify-between gap-4">
+										<h3 className="font-serif text-2xl font-normal text-neutral-900 sm:text-3xl">
+											{project.title.value}
+										</h3>
+										<span className="shrink-0 font-serif text-3xl font-light text-neutral-400 sm:text-4xl">
+											{project.year.value}
+										</span>
+									</div>
+
+									{/* Sector / Location microline */}
+									<div className="mt-2 flex items-center gap-2 font-sans text-[11px] font-semibold tracking-[0.18em] text-neutral-500 uppercase">
+										{project.sector.value && (
+											<span>{project.sector.value}</span>
+										)}
+										{project.sector.value && project.location.value && (
+											<span aria-hidden className="text-neutral-300">
+												/
+											</span>
+										)}
+										{project.location.value && (
+											<span className="truncate">
+												{project.location.value}
+											</span>
+										)}
+									</div>
+
+									{/* Description */}
+									{project.description.value && (
+										<p className="mt-4 font-sans text-xs leading-relaxed font-light text-neutral-600 sm:text-sm">
+											{project.description.value}
+										</p>
+									)}
+
+									{/* Prominent data panel */}
+									{(() => {
+										const dataItems = [
+											{
+												label: content.metaLabels.units.value,
+												value: project.units.value
+											},
+											{
+												label: content.metaLabels.builtUp.value,
+												value: project.builtUp.value
+											},
+											{
+												label: content.metaLabels.area.value,
+												value: project.area.value
+											},
+											{
+												label: content.metaLabels.delivery.value,
+												value: project.delivery.value
+											},
+											{
+												label: content.metaLabels.owner.value,
+												value: project.owner.value
+											},
+											{
+												label: content.metaLabels.consultant.value,
+												value: project.consultant.value
+											},
+											{
+												label: content.metaLabels.contractor.value,
+												value: project.contractor.value
+											},
+											{
+												label: content.metaLabels.startingPrice.value,
+												value: project.startingPrice.value
+											},
+											{
+												label: content.metaLabels.contractValue.value,
+												value: project.contractValue.value
+											}
+										].filter((item) => isUseful(item.value));
+										if (dataItems.length === 0) return null;
+										return (
+											<div className="mt-6 border border-neutral-300/80 bg-[#efeae0] p-5 sm:p-6">
+												<span className="block font-sans text-[10px] font-semibold tracking-[0.25em] text-neutral-500 uppercase">
+													{content.projectData.value}
+												</span>
+
+												<dl className="mt-4 divide-y divide-neutral-300/60 border-t border-neutral-300/70">
+													{dataItems.map((item) => (
+														<div
+															key={item.label}
+															className="flex items-center justify-between gap-4 py-2.5 text-xs sm:text-sm"
+														>
+															<dt className="shrink-0 font-sans text-[11px] font-medium tracking-wider text-neutral-500 uppercase">
+																{item.label}
+															</dt>
+															<dd className="text-end font-sans text-xs font-medium break-words text-neutral-900 sm:text-sm">
+																{item.value}
+															</dd>
+														</div>
+													))}
+												</dl>
+											</div>
+										);
+									})()}
+								</article>
+							))}
+						</div>
+
+						{/* Pagination */}
+						{totalPages > 1 && (
+							<nav
+								aria-label={content.filterLabels.paginationLabel.value}
+								className="mt-16 flex items-center justify-center gap-3 border-t border-neutral-300/70 pt-8"
 							>
-								<ChevronLeft className="size-4 rtl:rotate-180" />
-								<span className="hidden sm:inline">{content.filterLabels.prev.value}</span>
-							</button>
+								<button
+									type="button"
+									disabled={activePage === 1}
+									onClick={() => setPage((p) => Math.max(1, p - 1))}
+									className="inline-flex items-center gap-1.5 font-sans text-xs font-medium text-neutral-500 transition-colors hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-40"
+								>
+									<ChevronLeft className="size-4 rtl:rotate-180" />
+									<span className="hidden sm:inline">
+										{content.filterLabels.prev.value}
+									</span>
+								</button>
 
-							<div className="flex items-center gap-1.5">
-								{Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
-									<button
-										key={n}
-										type="button"
-										onClick={() => setPage(n)}
-										aria-current={n === activePage ? "page" : undefined}
-										className={
-											n === activePage
-												? "flex size-8 items-center justify-center bg-neutral-900 font-sans text-xs font-semibold text-white"
-												: "flex size-8 items-center justify-center font-sans text-xs font-medium text-neutral-500 transition-colors hover:text-neutral-900"
-										}
-									>
-										{n}
-									</button>
-								))}
-							</div>
+								<div className="flex items-center gap-1.5">
+									{Array.from({ length: totalPages }, (_, i) => i + 1).map(
+										(n) => (
+											<button
+												key={n}
+												type="button"
+												onClick={() => setPage(n)}
+												aria-current={n === activePage ? "page" : undefined}
+												className={
+													n === activePage
+														? "flex size-8 items-center justify-center bg-neutral-900 font-sans text-xs font-semibold text-white"
+														: "flex size-8 items-center justify-center font-sans text-xs font-medium text-neutral-500 transition-colors hover:text-neutral-900"
+												}
+											>
+												{n}
+											</button>
+										)
+									)}
+								</div>
 
-							<button
-								type="button"
-								disabled={activePage === totalPages}
-								onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-								className="inline-flex items-center gap-1.5 font-sans text-xs font-medium text-neutral-500 transition-colors hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-40"
-							>
-								<span className="hidden sm:inline">{content.filterLabels.next.value}</span>
-								<ChevronRight className="size-4 rtl:rotate-180" />
-							</button>
-						</nav>
-					)}
+								<button
+									type="button"
+									disabled={activePage === totalPages}
+									onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+									className="inline-flex items-center gap-1.5 font-sans text-xs font-medium text-neutral-500 transition-colors hover:text-neutral-900 disabled:pointer-events-none disabled:opacity-40"
+								>
+									<span className="hidden sm:inline">
+										{content.filterLabels.next.value}
+									</span>
+									<ChevronRight className="size-4 rtl:rotate-180" />
+								</button>
+							</nav>
+						)}
 					</>
 				) : !isSpotlightVisible ? (
 					/* Empty State when no items */

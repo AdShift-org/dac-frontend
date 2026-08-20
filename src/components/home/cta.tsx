@@ -4,6 +4,8 @@ import { useIntlayer } from "react-intlayer";
 
 import { Link } from "@/components/localized-link";
 
+import ctaImage from "#/assets/cta.jpeg";
+
 export const Cta: FC = () => {
 	const content = useIntlayer("home-cta");
 
@@ -13,8 +15,9 @@ export const Cta: FC = () => {
 			<div
 				className="absolute inset-0 bg-cover bg-right sm:bg-center"
 				style={{
-					backgroundImage:
-						"url('https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=1600')"
+					backgroundImage: ctaImage
+						? `url(${ctaImage})`
+						: "url('https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=1600')"
 				}}
 			/>
 			<div className="absolute inset-0 bg-gradient-to-r from-neutral-950/95 via-neutral-950/80 to-neutral-950/30 rtl:bg-gradient-to-l" />
