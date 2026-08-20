@@ -236,12 +236,14 @@ export const Clients: FC = () => {
 						key={group.title}
 						className={index < groups.length - 1 ? "mb-14 sm:mb-20" : ""}
 					>
-						<div className="mb-4 flex items-center">
-							<p className="font-sans text-xs tracking-wider text-neutral-600 uppercase sm:text-sm dark:text-neutral-400">
-								<span className="inline-block w-8 border-t border-neutral-600"></span>{" "}
-								{group.title}
-							</p>
-						</div>
+						{index === 0 && (
+							<div className="mb-4 flex items-center">
+								<p className="font-sans text-xs tracking-wider text-neutral-600 uppercase sm:text-sm dark:text-neutral-400">
+									<span className="inline-block w-8 border-t border-neutral-600"></span>{" "}
+									{group.title}
+								</p>
+							</div>
+						)}
 						<div className="border-t border-border pt-4 sm:pt-6">
 							<InteractiveMarquee
 								items={group.items}
