@@ -1,13 +1,32 @@
 import type { FC } from "react";
 
-import { useIntlayer } from "react-intlayer";
+import { useIntlayer, useLocale } from "react-intlayer";
 
 import { Link } from "@/components/localized-link";
 
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
+
 import ctaImage from "#/assets/cta.jpeg";
+
+const splitLines = (value: string, lines: number): string[] => {
+	const words = value.trim().split(/\s+/);
+	if (words.length <= lines) return [...words, ...Array(lines - words.length).fill("")];
+	const size = Math.ceil(words.length / lines);
+	const out: string[] = [];
+	for (let i = 0; i < lines; i++) out.push(words.slice(i * size, (i + 1) * size).join(" "));
+	return out;
+};
 
 export const Cta: FC = () => {
 	const content = useIntlayer("home-cta");
+	const { locale } = useLocale();
+	const { home } = useCmsData();
+	const s = pickSection(home, "lets_build", locale as Locale);
+	const ctaTitle =
+		(s?.title as string) ||
+		`${content.heading1.value} ${content.heading2.value} ${content.heading3.value}`;
+	const lines = splitLines(ctaTitle, 3);
+	const bgImage = s?.image || ctaImage;
 
 	return (
 		<section className="relative min-h-[550px] overflow-hidden bg-neutral-950 py-32 text-white">
@@ -15,8 +34,8 @@ export const Cta: FC = () => {
 			<div
 				className="absolute inset-0 bg-cover bg-right sm:bg-center"
 				style={{
-					backgroundImage: ctaImage
-						? `url(${ctaImage})`
+					backgroundImage: bgImage
+						? `url(${bgImage})`
 						: "url('https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=1600')"
 				}}
 			/>
@@ -25,9 +44,11 @@ export const Cta: FC = () => {
 			<div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-12">
 				<div className="max-w-2xl text-start">
 					<h2 className="font-serif text-4xl leading-[1.06] font-bold tracking-tight text-white uppercase sm:text-5xl md:text-6xl lg:text-7xl">
-						<span className="block">{content.heading1.value}</span>
-						<span className="block">{content.heading2.value}</span>
-						<span className="block">{content.heading3.value}</span>
+						{lines.map((line) => (
+							<span key={line} className="block">
+								{line}
+							</span>
+						))}
 					</h2>
 
 					<div className="mt-10 flex flex-wrap items-center gap-4">

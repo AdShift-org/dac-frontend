@@ -6,11 +6,29 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ChevronDown } from "lucide-react";
 
+import { useCmsData, pickSection, type Locale } from "@/lib/cms";
+
 import heroImg from "#/assets/home/hero.png";
+
+const splitLines = (value: string, lines: number): string[] => {
+	const words = value.trim().split(/\s+/);
+	if (words.length <= lines) return [...words, ...Array(lines - words.length).fill("")];
+	const size = Math.ceil(words.length / lines);
+	const out: string[] = [];
+	for (let i = 0; i < lines; i++) out.push(words.slice(i * size, (i + 1) * size).join(" "));
+	return out;
+};
 
 export const Hero: FC = () => {
 	const content = useIntlayer("about-hero");
 	const { locale } = useLocale();
+	const { about } = useCmsData();
+	const s = pickSection(about, "hero_section", locale as Locale);
+	const heroTitle = (s?.title as string) || `${content.titleLine1.value} ${content.titleLine2.value} ${content.titleLine3.value}`;
+	const heroDesc = (s?.description as string) || content.description.value;
+	const lines = splitLines(heroTitle, 3);
+	const bgImage = s?.image || heroImg;
+
 	const containerRef = useRef<HTMLDivElement>(null);
 
 	useGSAP(
@@ -61,8 +79,8 @@ export const Hero: FC = () => {
 			<div
 				className="absolute inset-0 bg-cover bg-center"
 				style={{
-					backgroundImage: heroImg
-						? `url(${heroImg})`
+					backgroundImage: bgImage
+						? `url(${bgImage})`
 						: "url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=2000&auto=format&fit=crop&q=85')"
 				}}
 			/>
@@ -73,13 +91,15 @@ export const Hero: FC = () => {
 			<div className="relative z-10 mx-auto w-full max-w-7xl">
 				<div className="max-w-3xl">
 					<h1 className="ab-hero-title font-serif text-5xl leading-[1.05] font-bold tracking-tight text-white uppercase sm:text-6xl md:text-7xl lg:text-8xl">
-						<span className="block">{content.titleLine1.value}</span>
-						<span className="block">{content.titleLine2.value}</span>
-						<span className="block">{content.titleLine3.value}</span>
+						{lines.map((line) => (
+							<span key={line} className="block">
+								{line}
+							</span>
+						))}
 					</h1>
 
 					<p className="ab-hero-desc mt-8 max-w-xl text-sm leading-relaxed font-light text-white/80 sm:text-base md:text-lg">
-						{content.description.value}
+						{heroDesc}
 					</p>
 				</div>
 			</div>
