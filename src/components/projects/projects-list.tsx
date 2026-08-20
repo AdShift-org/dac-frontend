@@ -183,7 +183,14 @@ export const ProjectsList: FC = () => {
 	// Filtering logic
 	const isSpotlightVisible = useMemo(() => !!spotlight, [spotlight]);
 
-	const filteredItems = useMemo(() => items, [items]);
+	const filteredItems = useMemo(
+		() =>
+			[...items].sort(
+				(a, b) =>
+					new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+			),
+		[items]
+	);
 
 	// Pagination
 	const PAGE_SIZE = 6;
