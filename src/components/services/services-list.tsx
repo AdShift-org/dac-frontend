@@ -3,8 +3,8 @@ import { useMemo, useRef, type FC } from "react";
 import { useIntlayer, useLocale } from "react-intlayer";
 
 import { Link } from "@/components/localized-link";
-import { useCmsData } from "@/lib/cms";
 
+import { useCmsData } from "@/lib/cms";
 import { cn } from "@/lib/utils";
 
 import { useGSAP } from "@gsap/react";
@@ -150,7 +150,7 @@ export const ServicesList: FC = () => {
 
 									<div className="mt-8">
 										<Link
-											to={"/projects" as never}
+											to={"/projects"}
 											className={cn(
 												"group inline-flex items-center gap-3 border px-6 py-3 font-sans text-xs font-semibold tracking-widest uppercase transition-all duration-200",
 												isDark
