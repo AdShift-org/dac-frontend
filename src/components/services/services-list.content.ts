@@ -42,8 +42,8 @@ const servicesListContent = {
 					ar: "دقة متناهية في التنفيذ. ندير وننفذ مشاريع البناء المعقدة من المواد الأولية وحتى التشطيبات النهائية، مقدمين أناقة عملية ودقيقة في الوقت المحدد ووفق أعلى المعايير المؤسسية الحديثة."
 				}),
 				buttonText: t({
-					en: "EXPLORE SERVICES",
-					ar: "استكشف الخدمات"
+					en: "EXPLORE PROJECTS",
+					ar: "استكشف المشاريع"
 				}),
 				image: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=1400",
 				imageAlt: t({
@@ -66,8 +66,8 @@ const servicesListContent = {
 					ar: "أعمال كهروميكانيكية وبنية تحتية فنية متقدمة مصممة لتحقيق التكامل المعماري الحديث، وكفاءة الطاقة، والجاهزية التشغيلية المستدامة."
 				}),
 				buttonText: t({
-					en: "EXPLORE SERVICES",
-					ar: "استكشف الخدمات"
+					en: "EXPLORE PROJECTS",
+					ar: "استكشف المشاريع"
 				}),
 				image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1400",
 				imageAlt: t({
@@ -90,8 +90,8 @@ const servicesListContent = {
 					ar: "إشراف شامل على الأصول، وهندسة صيانة وقائية، وإدارة متكاملة لدورة حياة العقار للحفاظ على القيمة الاستثمارية ورضا المستأجرين على المدى الطويل."
 				}),
 				buttonText: t({
-					en: "EXPLORE SERVICES",
-					ar: "استكشف الخدمات"
+					en: "EXPLORE PROJECTS",
+					ar: "استكشف المشاريع"
 				}),
 				image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1400",
 				imageAlt: t({
