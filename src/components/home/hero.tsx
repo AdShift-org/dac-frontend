@@ -12,6 +12,7 @@ import { ArrowDown, ArrowRight } from "lucide-react";
 
 import dacLogo from "#/assets/dac-logo-no-slogan.png";
 import heroImgAsset from "#/assets/home/hero.png";
+import { PreloaderOverlay } from "#/components/preloader";
 
 gsap.registerPlugin(useGSAP);
 
@@ -220,20 +221,11 @@ export const Hero: FC = () => {
 			className="relative flex h-screen w-full items-center justify-center overflow-hidden bg-neutral-950"
 		>
 			{/* Initial Loading Screen: logo + progress line, crossfades into the intro's start frame */}
-			<div
-				className={`pointer-events-none fixed inset-0 z-50 flex flex-col items-center justify-center gap-8 bg-neutral-950 transition-opacity duration-700 ${
+			<PreloaderOverlay
+				className={`pointer-events-none transition-opacity duration-700 ${
 					isReady ? "opacity-0" : "opacity-100"
 				}`}
-			>
-				<img
-					src={dacLogo}
-					alt="DAC"
-					className="max-h-24 w-auto max-w-[280px] object-contain opacity-90 sm:max-h-32 sm:max-w-[360px]"
-				/>
-				<div className="h-[2px] w-24 overflow-hidden bg-white/10">
-					<div className="h-full w-1/2 animate-pulse bg-accent" />
-				</div>
-			</div>
+			/>
 
 			{/* State 2: Centered DAC Logo */}
 			<div
