@@ -5,7 +5,8 @@ import { useIntlayer, useLocale } from "react-intlayer";
 import { useCmsData, pickSection, type Locale } from "@/lib/cms";
 import { cn } from "@/lib/utils";
 
-import { Mail, MapPin, Phone } from "lucide-react";
+import { MapPin, Phone } from "lucide-react";
+// import { Mail } from "lucide-react";
 
 type OfficeData = {
 	id: string;
@@ -14,7 +15,7 @@ type OfficeData = {
 	addressTitle: string;
 	addressDetail: string;
 	phone: string;
-	email: string;
+	// email: string;
 	hours: { days: string; time: string }[];
 };
 
@@ -53,7 +54,7 @@ export const Offices: FC = () => {
 					addressTitle: (o?.city as string) ?? "",
 					addressDetail: (o?.address as string) ?? "",
 					phone: (o?.phone as string) ?? "",
-					email: (o?.email as string) ?? "",
+					// email: (o?.email as string) ?? "",
 					hours
 				};
 			})
@@ -65,7 +66,7 @@ export const Offices: FC = () => {
 					addressTitle: content.cairo.addressTitle.value,
 					addressDetail: content.cairo.addressDetail.value,
 					phone: content.cairo.phoneDetail.value,
-					email: content.cairo.emailDetail.value,
+					// email: content.cairo.emailDetail.value,
 					hours: content.cairo.schedule.map((item) => ({
 						days: item.days.value,
 						time: item.time.value
@@ -78,7 +79,7 @@ export const Offices: FC = () => {
 					addressTitle: content.dubai.addressTitle.value,
 					addressDetail: content.dubai.addressDetail.value,
 					phone: content.dubai.phoneDetail.value,
-					email: content.dubai.emailDetail.value,
+					// email: content.dubai.emailDetail.value,
 					hours: content.dubai.schedule.map((item) => ({
 						days: item.days.value,
 						time: item.time.value
@@ -164,8 +165,8 @@ export const Offices: FC = () => {
 								</div>
 							</div>
 
-							{/* Email */}
-							<div className="flex items-start gap-4">
+							{/* Email — hidden: emails commented out site-wide */}
+							{/* <div className="flex items-start gap-4">
 								<div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#f5efe6] text-[#b38b4d]">
 									<Mail className="size-5" />
 								</div>
@@ -180,7 +181,7 @@ export const Offices: FC = () => {
 										{current.email}
 									</a>
 								</div>
-							</div>
+							</div> */}
 						</div>
 					</div>
 

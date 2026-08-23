@@ -37,7 +37,7 @@ const officesContent = {
 				en: "Email Us",
 				ar: "راسلنا"
 			}),
-			emailDetail: "concierge@estatexarchive.com",
+			// emailDetail: "concierge@estatexarchive.com",
 			hoursTitle: t({
 				en: "Office Hours",
 				ar: "ساعات العمل"
@@ -97,7 +97,7 @@ const officesContent = {
 				en: "Email Us",
 				ar: "راسلنا"
 			}),
-			emailDetail: "dubai@dac-construction.com",
+			// emailDetail: "dubai@dac-construction.com",
 			hoursTitle: t({
 				en: "Office Hours",
 				ar: "ساعات العمل"

@@ -80,14 +80,14 @@ export const InquiryForm: FC = () => {
 							{str("description", content.sectionDesc.value)}
 						</p>
 
-						{contactInfo && (contactInfo.email || contactInfo.phone) && (
+						{contactInfo && contactInfo.phone && (
 							<div className="mt-8 flex flex-col gap-2 text-sm text-neutral-600">
-								<a
+								{/* <a
 									href={`mailto:${contactStr("email", "")}`}
 									className="w-fit font-medium text-neutral-800 underline decoration-[#cbb28d] underline-offset-4 hover:text-neutral-900"
 								>
 									{contactStr("email", "")}
-								</a>
+								</a> */}
 								<a
 									href={`tel:${contactStr("phone", "")}`}
 									className="w-fit font-medium text-neutral-800 underline decoration-[#cbb28d] underline-offset-4 hover:text-neutral-900"
