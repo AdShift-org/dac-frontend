@@ -1,4 +1,4 @@
-import { useRef, type FC } from "react";
+import { useRef, useState, type FC } from "react";
 
 import { useIntlayer, useLocale } from "react-intlayer";
 
@@ -9,6 +9,8 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ArrowRight, Plus } from "lucide-react";
 
+import { Link } from "../localized-link";
+
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export const Services: FC = () => {
@@ -18,15 +20,28 @@ export const Services: FC = () => {
 	const s = pickSection(home, "services_section", locale as Locale);
 	const str = (key: string, fallback: string) => (s?.[key] as string) || fallback;
 
-	const serviceNames =
+	interface ServiceItem {
+		name: string;
+		description: string;
+	}
+
+	const items: ServiceItem[] =
 		(services ?? []).length > 0
 			? services!.map((raw) => {
-					// ponytail: API Arabic name is empty — fall back to English.
-					// ar is normalized by unfoldAr at the loader, so name_ar surfaces as `name`.
-					const arName = (raw?.[locale] as { name?: string }).name || "";
-					return arName || raw.en.name || "";
+					// ponytail: API Arabic name/description may be empty — fall back to English.
+					// ar is normalized by unfoldAr at the loader, so *_ar surfaces without the suffix.
+					const loc = (raw?.[locale] as { name?: string; description?: string }) || {};
+					return {
+						name: loc.name || raw.en.name || "",
+						description: loc.description || raw.en.description || ""
+					};
 				})
-			: content.services.map((s) => s.value);
+			: content.services.map((s, i) => ({
+					name: s.value,
+					description: content.descriptions[i]?.value ?? ""
+				}));
+
+	const [openIndex, setOpenIndex] = useState<number | null>(null);
 
 	const sectionRef = useRef<HTMLElement>(null);
 
@@ -110,36 +125,55 @@ export const Services: FC = () => {
 						</div>
 
 						<div className="sv-intro mt-10">
-							<a
-								href="/services"
+							<Link
+								to="/services"
 								className="group inline-flex items-center gap-3 font-sans text-xs font-semibold tracking-widest text-accent uppercase transition-colors hover:text-neutral-900"
 							>
 								<span>{content.seeAll.value}</span>
 								<ArrowRight className="size-4 transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
-							</a>
+							</Link>
 						</div>
 					</div>
 
 					{/* Right Column - Service Items */}
 					<div className="sv-list divide-y divide-neutral-200 lg:col-span-7">
-						{serviceNames.map((service, index) => (
-							<div
-								key={index}
-								className="sv-row group flex cursor-pointer items-center justify-between py-8 transition-colors hover:bg-neutral-100/50 sm:py-10"
-							>
-								<div className="flex items-center gap-4">
-									<span className="font-sans text-base font-bold text-accent sm:text-xl">
-										—
-									</span>
-									<h3 className="font-sans text-xl font-extrabold tracking-tight text-neutral-900 uppercase transition-colors group-hover:text-accent sm:text-2xl lg:text-3xl">
-										{service}
-									</h3>
+						{items.map((service, index) => {
+							const isOpen = openIndex === index;
+							return (
+								<div
+									key={index}
+									className="sv-row group cursor-pointer py-8 transition-colors hover:bg-neutral-100/50 sm:py-10"
+									onClick={() => setOpenIndex(isOpen ? null : index)}
+								>
+									<div className="flex items-center justify-between gap-4">
+										<div className="flex items-center gap-4">
+											<span className="font-sans text-base font-bold text-accent sm:text-xl">
+												—
+											</span>
+											<h3 className="font-sans text-xl font-extrabold tracking-tight text-neutral-900 uppercase transition-colors group-hover:text-accent sm:text-2xl lg:text-3xl">
+												{service.name}
+											</h3>
+										</div>
+										<div className="sv-plus flex size-8 shrink-0 items-center justify-center rounded-full border border-neutral-300 text-neutral-500 transition-all duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-neutral-950 sm:size-10">
+											<Plus
+												className={`size-4 transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
+											/>
+										</div>
+									</div>
+									<div
+										className={`grid transition-[grid-template-rows] duration-500 ease-in-out ${
+											isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
+										}`}
+									>
+										<div className="overflow-hidden">
+											<p className="max-w-2xl ps-8 pt-4 text-sm leading-relaxed font-light text-neutral-600 sm:ps-12 sm:text-base">
+												{service.description}
+											</p>
+										</div>
+									</div>
 								</div>
-								<div className="sv-plus flex size-8 items-center justify-center rounded-full border border-neutral-300 text-neutral-500 transition-colors group-hover:border-accent group-hover:bg-accent group-hover:text-neutral-950 sm:size-10">
-									<Plus className="size-4" />
-								</div>
-							</div>
-						))}
+							);
+						})}
 					</div>
 				</div>
 			</div>

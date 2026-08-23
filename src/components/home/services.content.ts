@@ -40,6 +40,24 @@ const servicesContent = {
 				en: "PROPERTY MANAGEMENT",
 				ar: "إدارة الممتلكات"
 			})
+		],
+		descriptions: [
+			t({
+				en: "We design and build modern residential communities with world-class amenities.",
+				ar: "نصمم ونبني مجتمعات سكنية حديثة بوسائل راحة عالمية المستوى."
+			}),
+			t({
+				en: "End-to-end contracting services delivered with precision and on schedule.",
+				ar: "خدمات مقاولات متكاملة تُنجز بدقة وفي المواعيد المحددة."
+			}),
+			t({
+				en: "Specialized technical and engineering works for projects of every scale.",
+				ar: "أعمال فنية وهندسية متخصصة لمشاريع بجميع الأحجام."
+			}),
+			t({
+				en: "Comprehensive property management that protects and grows your assets.",
+				ar: "إدارة شاملة للممتلكات تحمي أصولك وتنمّيها."
+			})
 		]
 	}
 } satisfies Dictionary;
