@@ -164,6 +164,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/contact-inquiries": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Submit a contact inquiry
+         * @description Creates a new contact inquiry and notifies the company by email.
+         */
+        post: operations["submitAContactInquiry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2205,6 +2225,109 @@ export interface operations {
                                     }[];
                                 };
                             };
+                        };
+                    };
+                };
+            };
+        };
+    };
+    submitAContactInquiry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description The full name of the inquirer.
+                     * @example John Doe
+                     */
+                    full_name: string;
+                    /**
+                     * @description The email address of the inquirer.
+                     * @example john@example.com
+                     */
+                    email: string;
+                    /**
+                     * @description nullable The phone number of the inquirer.
+                     * @example +201234567890
+                     */
+                    phone?: string | null;
+                    /**
+                     * @description nullable The company of the inquirer.
+                     * @example Acme Corp
+                     */
+                    company?: string | null;
+                    /**
+                     * @description nullable The type of the project.
+                     * @example Residential Development
+                     */
+                    project_type?: string | null;
+                    /**
+                     * @description nullable The location of the project.
+                     * @example Cairo, Egypt
+                     */
+                    project_location?: string | null;
+                    /**
+                     * @description The inquiry message.
+                     * @example I would like to discuss a new project.
+                     */
+                    message: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example Your inquiry has been submitted successfully. We will get back to you soon. */
+                        message?: string;
+                        data?: {
+                            /** @example 1 */
+                            id?: number;
+                            /** @example John Doe */
+                            full_name?: string;
+                            /** @example john@example.com */
+                            email?: string;
+                            /** @example +201234567890 */
+                            phone?: string;
+                            /** @example Acme Corp */
+                            company?: string;
+                            /** @example Residential Development */
+                            project_type?: string;
+                            /** @example Cairo, Egypt */
+                            project_location?: string;
+                            /** @example I would like to discuss a new project. */
+                            message?: string;
+                            /** @example 2026-08-23T10:00:00.000000Z */
+                            created_at?: string;
+                        };
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example The full name field is required. */
+                        message?: string;
+                        errors?: {
+                            /**
+                             * @example [
+                             *       "The full name field is required."
+                             *     ]
+                             */
+                            full_name?: string[];
                         };
                     };
                 };

@@ -5,6 +5,7 @@ import { useForm } from "@tanstack/react-form";
 import { useIntlayer, useLocale } from "react-intlayer";
 
 import { useCmsData, pickSection, type Locale } from "@/lib/cms";
+import { $api } from "@/lib/oapi-client";
 
 import { ArrowRight, CheckCircle2, ChevronDown } from "lucide-react";
 
@@ -29,6 +30,8 @@ export const InquiryForm: FC = () => {
 		(contactInfo?.[key] as string) || fallback;
 	const [isSubmitted, setIsSubmitted] = useState(false);
 
+	const inquiry = $api.useMutation("post", "/api/contact-inquiries");
+
 	const form = useForm<ContactInquiryData>({
 		defaultValues: {
 			fullName: "",
@@ -39,11 +42,24 @@ export const InquiryForm: FC = () => {
 			projectLocation: "",
 			message: ""
 		},
-		onSubmit: async () => {
-			// Simulate API submission
-			await new Promise((resolve) => setTimeout(resolve, 800));
-			setIsSubmitted(true);
-			form.reset();
+		onSubmit: async ({ value }) => {
+			try {
+				await inquiry.mutateAsync({
+					body: {
+						full_name: value.fullName,
+						email: value.email,
+						phone: value.phone || null,
+						company: value.company || null,
+						project_type: value.projectType || null,
+						project_location: value.projectLocation || null,
+						message: value.message
+					}
+				});
+				setIsSubmitted(true);
+				form.reset();
+			} catch {
+				// surfaced via inquiry.isError
+			}
 		}
 	});
 
@@ -373,6 +389,12 @@ export const InquiryForm: FC = () => {
 										)}
 									</form.Subscribe>
 								</div>
+
+								{inquiry.isError && (
+									<p className="text-sm text-red-500">
+										{content.errorMessage.value}
+									</p>
+								)}
 							</form>
 						)}
 					</div>

@@ -97,6 +97,10 @@ const inquiryFormContent = {
 			en: "Thank you! Your inquiry has been sent successfully. Our team will contact you shortly.",
 			ar: "شكراً لتواصلك! تم إرسال استفسارك بنجاح، وسيتواصل معك فريقنا في أقرب وقت."
 		}),
+		errorMessage: t({
+			en: "Something went wrong while sending your inquiry. Please try again.",
+			ar: "حدث خطأ أثناء إرسال استفسارك. يرجى المحاولة مرة أخرى."
+		}),
 		validation: {
 			nameRequired: t({
 				en: "Full name is required",

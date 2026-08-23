@@ -1,4 +1,5 @@
 import createFetchClient from "openapi-fetch";
+import createClient from "openapi-react-query";
 
 import type { paths } from "./v1";
 
@@ -7,9 +8,9 @@ export const client = createFetchClient<paths>({
 	headers: {
 		Accept: "application/json"
 	},
-	fetch: async (input) => {
+	fetch: async (input, init) => {
 		try {
-			return await fetch(input);
+			return await fetch(input, init);
 		} catch (err) {
 			// normalize "server unreachable"
 			return new Response("Server Error", {
@@ -19,3 +20,5 @@ export const client = createFetchClient<paths>({
 		}
 	}
 });
+
+export const $api = createClient(client);
