@@ -7,8 +7,11 @@ import { client } from "@/lib/oapi-client";
 
 import { Header } from "#/components/header";
 import { NotFound } from "#/components/not-found";
+import { Preloader } from "#/components/preloader";
 
 export const Route = createFileRoute("/{-$locale}")({
+	defaultPendingComponent: Preloader,
+	defaultPendingMs: 300,
 	loader: async () => {
 		const [services, projects, home, contact, about, media] = await Promise.all([
 			client.GET("/api/services"),
