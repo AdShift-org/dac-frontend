@@ -6,7 +6,7 @@ const projectsHeroContent = {
 		index: "01",
 		titleLine1: t({
 			en: "OUR PORTFOLIO",
-			ar: "بورتفوليو"
+			ar: "حافظة"
 		}),
 		titleLine2: t({
 			en: "OF BUILT",
